@@ -1,38 +1,81 @@
-<nav class="relative z-20 px-4 pt-4">
-    <div class="shadow-md rounded-2xl" style="background: linear-gradient(to right, #DD8168, #f0a58f);">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-4">
-                <!-- Logo -->
-                <div class="flex items-center space-x-2 text-white">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo Vida Plena"
-                        class="w-16 h-16 object-cover rounded-lg -my-2">
-                    <span class="text-xl font-bold text-white">VIDA PLENA</span>
-                </div>
+<nav x-data="{ open: false }"
+     class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/90 border-b border-gray-200 shadow-sm">
 
-                <!-- Menu Items -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-white text-lg hover:text-orange-100 font-medium transition duration-300">Inicio</a>
-                    <a href="#" class="text-white text-lg hover:text-orange-100 font-medium transition duration-300">Productos</a>
-                    <a href="#" class="text-white text-lg hover:text-orange-100 font-medium transition duration-300">Servicios</a>
-                    <a href="#" class="text-white text-lg hover:text-orange-100 font-medium transition duration-300">Sobre Nosotros</a>
-                </div>
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
+        <!-- LOGO -->
+        <div class="flex items-center gap-4">
+            <img src="{{ asset('images/logo.png') }}"
+                 class="h-14 md:h-16 w-auto object-contain">
 
-                <!-- Carrito -->
-                <div class="flex items-center space-x-2 text-white">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
-                    </svg>
-                    <span class="font-medium text-lg">Carrito</span>
-                </div>
+            <span class="hidden sm:block text-2xl md:text-3xl font-bold text-[#E48F62] tracking-wide">
+                VIDA <span class="text-[#83d77c]">PLENA</span>
+            </span>
+        </div>
 
-                <!-- Mobile menu button -->
-                <button class="md:hidden text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
+        <!-- MENU DESKTOP -->
+        <div class="hidden md:flex gap-10 font-medium text-gray-700 text-lg">
+            <a href="#" class="hover:text-[#E48F62] transition">Inicio</a>
+            <a href="#" class="hover:text-[#E28987] transition">Tienda</a>
+            <a href="#" class="hover:text-[#83d77c] transition">Soluciones</a>
+            <a href="#" class="hover:text-[#ffbb51] transition">Contacto</a>
+        </div>
+
+        <!-- DERECHA -->
+        <div class="flex items-center gap-6">
+
+            <!-- Carrito -->
+            <button class="relative text-xl">
+                🛒
+                <span class="absolute -top-2 -right-3 bg-[#E28987] text-white text-xs px-2 py-0.5 rounded-full shadow">
+                    2
+                </span>
+            </button>
+
+            <!-- Botón login desktop -->
+            <button class="hidden md:block bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition">
+                Ingresar
+            </button>
+
+            <!-- Botón hamburguesa móvil -->
+            <button @click="open = !open"
+                    class="md:hidden focus:outline-none">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-7 w-7 text-[#E48F62]"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+
+                    <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+
+                    <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+
+            </button>
+        </div>
+
+    </div>
+
+    <!-- MENU MOVIL -->
+    <div x-show="open"
+         x-transition
+         class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+
+        <div class="px-6 py-6 space-y-4 text-lg font-medium">
+
+            <a href="#" class="block hover:text-[#E48F62] transition">Inicio</a>
+            <a href="#" class="block hover:text-[#E28987] transition">Tienda</a>
+            <a href="#" class="block hover:text-[#83d77c] transition">Soluciones</a>
+            <a href="#" class="block hover:text-[#ffbb51] transition">Contacto</a>
+
+            <button class="w-full mt-4 bg-[#E48F62] text-white px-5 py-3 rounded-xl hover:bg-[#E28987] transition">
+                Ingresar
+            </button>
+
         </div>
     </div>
+
 </nav>

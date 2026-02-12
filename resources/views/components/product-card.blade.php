@@ -1,14 +1,40 @@
-@props(['title', 'price', 'image'])
+@props(['titulo','precio','imagen','categoria','rating' => 5])
 
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
-    <div class="p-8">
-        <div class="bg-white rounded-xl p-8 mb-6 flex items-center justify-center" style="min-height: 200px;">
-            <img src="{{ asset($image) }}" alt="{{ $title }}" class="max-h-48 object-contain">
-        </div>
-        <h3 class="text-2xl font-bold text-gray-800 mb-3 text-center">{{ $title }}</h3>
-        <p class="text-2xl font-semibold text-gray-600 mb-6 text-center">${{ $price }}</p>
-        <button class="w-full bg-teal-400 hover:bg-teal-500 text-white font-semibold px-6 py-3 rounded-lg transition duration-300">
-            Ver Detalles
-        </button>
+<div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 group">
+
+    <div class="relative overflow-hidden">
+        <img src="{{ asset('images/'.$imagen) }}"
+            class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
+
+        <span class="absolute top-4 left-4 bg-[#83d77c] text-white text-xs px-3 py-1 rounded-full">
+            Nuevo
+        </span>
     </div>
+
+    <div class="p-6 space-y-3">
+
+        <span class="text-xs font-semibold text-[#E28987]">
+            {{ $categoria }}
+        </span>
+
+        <h3 class="text-lg font-bold">
+            {{ $titulo }}
+        </h3>
+
+        <x-rating-stars :rating="$rating" />
+
+        <div class="flex justify-between items-center pt-2">
+            <span class="text-2xl font-bold text-[#E48F62]">
+                ${{ $precio }}
+            </span>
+
+            <button
+                class="bg-white border-2 border-[#E28987] text-[#E28987] p-3 rounded-xl">
+                🛒
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
