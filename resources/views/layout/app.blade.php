@@ -29,7 +29,7 @@
 
     <x-navbar />
 
-    <main class="pt-28">
+    <main>
         @yield('content')
     </main>
 
@@ -37,7 +37,9 @@
 
 </body>
 
+    <script src="https://kit.fontawesome.com/1e0bbd4af0.js" crossorigin="anonymous"></script>
     <script>
+
         const revealElements = document.querySelectorAll('.reveal');
 
         const revealOnScroll = () => {

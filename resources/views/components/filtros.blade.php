@@ -3,42 +3,41 @@
     <div class="grid lg:grid-cols-4 gap-10">
 
         <!-- SIDEBAR FILTROS -->
-        <div class="bg-white p-6 rounded-3xl shadow-xl space-y-8 h-fit">
-
-            <h3 class="text-xl font-bold flex items-center gap-2">
-                🔎 Filtros
-            </h3>
+        <div class="bg-white p-6 rounded-3xl shadow-xl space-y-8 h-fit text-base">
 
             <!-- Buscar -->
             <div>
-                <label class="font-semibold text-sm">Buscar</label>
+                <label class="font-semibold text-lg">Buscar</label>
                 <input type="text"
                     placeholder="Ej. barandal, reloj..."
-                    class="mt-2 w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-[#E48F62] outline-none">
+                    class="mt-2 w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#E48F62] outline-none">
             </div>
 
             <!-- Categoría -->
             <div>
-                <label class="font-semibold text-sm">Categoría</label>
-                <div class="mt-2 space-y-2 text-sm">
+                <label class="font-semibold text-lg">Categoría</label>
+                <div class="mt-3 space-y-3 text-base">
                     <label class="flex items-center gap-2">
-                        <input type="checkbox"> 🏡 Hogar Seguro
+                        <input type="checkbox">
+                        <i class="fa-solid fa-house-circle-check"></i> Hogar Seguro
                     </label>
                     <label class="flex items-center gap-2">
-                        <input type="checkbox"> 🩺 Rehabilitación
+                        <input type="checkbox">
+                        <i class="fa-solid fa-stethoscope"></i> Rehabilitación
                     </label>
                     <label class="flex items-center gap-2">
-                        <input type="checkbox"> ⌚ Tecnología
+                        <input type="checkbox">
+                        <i class="fa-solid fa-kit-medical"></i> Tecnología
                     </label>
                 </div>
             </div>
 
             <!-- Precio -->
             <div>
-                <label class="font-semibold text-sm">Rango de precio</label>
+                <label class="font-semibold text-lg">Rango de precio</label>
                 <input type="range" min="0" max="10000"
                     class="w-full mt-3 accent-[#E28987]">
-                <div class="flex justify-between text-xs text-gray-500">
+                <div class="flex justify-between text-sm text-gray-500">
                     <span>$0</span>
                     <span>$10,000</span>
                 </div>
@@ -46,8 +45,8 @@
 
             <!-- Disponibilidad -->
             <div>
-                <label class="font-semibold text-sm">Disponibilidad</label>
-                <div class="mt-2 space-y-2 text-sm">
+                <label class="font-semibold text-lg">Disponibilidad</label>
+                <div class="mt-3 space-y-3 text-base">
                     <label class="flex items-center gap-2">
                         <input type="checkbox"> En stock
                     </label>
@@ -57,7 +56,7 @@
                 </div>
             </div>
 
-            <button class="w-full bg-[#ffbb51] text-white py-3 rounded-xl font-semibold hover:bg-[#E48F62] transition">
+            <button class="w-full bg-[#ffbb51] text-white py-3 rounded-xl font-semibold text-lg hover:bg-[#E48F62] transition">
                 Aplicar filtros
             </button>
 

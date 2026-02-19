@@ -1,5 +1,6 @@
 <nav x-data="{ open: false }"
-     class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/90 border-b border-gray-200 shadow-sm">
+     class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/90
+            border-b border-gray-200 shadow-[0_6px_20px_rgba(0,0,0,0.12)]">
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
@@ -19,6 +20,7 @@
             <a href="#" class="hover:text-[#E28987] transition">Tienda</a>
             <a href="#" class="hover:text-[#83d77c] transition">Soluciones</a>
             <a href="#" class="hover:text-[#ffbb51] transition">Contacto</a>
+            <a href="#" class="hover:text-[#ffbb51] transition">Nosotros</a>
         </div>
 
         <!-- DERECHA -->
@@ -26,16 +28,17 @@
 
             <!-- Carrito -->
             <button class="relative text-xl">
-                🛒
+                <i class="fa-solid fa-cart-shopping"></i>
                 <span class="absolute -top-2 -right-3 bg-[#E28987] text-white text-xs px-2 py-0.5 rounded-full shadow">
-                    2
+                    0
                 </span>
             </button>
 
-            <!-- Botón login desktop -->
-            <button class="hidden md:block bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition">
+            <button class="hidden md:flex items-center gap-2 bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition font-medium">
                 Ingresar
+                <i class="fa-solid fa-right-to-bracket text-sm"></i>
             </button>
+
 
             <!-- Botón hamburguesa móvil -->
             <button @click="open = !open"
@@ -70,6 +73,7 @@
             <a href="#" class="block hover:text-[#E28987] transition">Tienda</a>
             <a href="#" class="block hover:text-[#83d77c] transition">Soluciones</a>
             <a href="#" class="block hover:text-[#ffbb51] transition">Contacto</a>
+            <a href="#" class="block hover:text-[#ffbb51] transition">Nosotros</a>
 
             <button class="w-full mt-4 bg-[#E48F62] text-white px-5 py-3 rounded-xl hover:bg-[#E28987] transition">
                 Ingresar
