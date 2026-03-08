@@ -1,4 +1,4 @@
-@props(['titulo','precio','imagen','categoria','rating' => 5])
+@props(['titulo','precio','imagen','categoria','estado','rating'])
 
 <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 group">
 
@@ -17,7 +17,7 @@
             </span>
 
             <span class="bg-[#83d77c] text-white font-bold text-xs px-3 py-1 rounded-full">
-                Nuevo
+                {{ $estado }}
             </span>
 
         </div>

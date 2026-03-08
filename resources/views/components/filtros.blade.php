@@ -17,18 +17,12 @@
             <div>
                 <label class="font-semibold text-lg">Categoría</label>
                 <div class="mt-3 space-y-3 text-base">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox">
-                        <i class="fa-solid fa-house-circle-check"></i> Hogar Seguro
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox">
-                        <i class="fa-solid fa-stethoscope"></i> Rehabilitación
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox">
-                        <i class="fa-solid fa-kit-medical"></i> Tecnología
-                    </label>
+                    @foreach ($categorias as $c)
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox">
+                            <i class="{{ $c->icono }}"></i> {{ $c->categoria }}
+                        </label>
+                    @endforeach
                 </div>
             </div>
 
