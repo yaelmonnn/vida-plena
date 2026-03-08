@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="{{ asset('images/logo.ico') }}">
 
     @vite('resources/css/app.css')
-    <script src="//unpkg.com/alpinejs" defer></script>
+
     <style>
         .reveal {
             opacity: 0;
@@ -24,6 +24,7 @@
         }
     </style>
 
+    @livewireStyles
 </head>
 <body class="bg-gray-50 text-gray-700">
 
@@ -35,28 +36,30 @@
 
     <x-footer />
 
-</body>
-
     <script src="https://kit.fontawesome.com/1e0bbd4af0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.userway.org/widget.js" data-account="fZKfHgpiYK"></script>
+
+    @livewireScripts
+
     <script>
-
-        const revealElements = document.querySelectorAll('.reveal');
-
-        const revealOnScroll = () => {
-            revealElements.forEach(el => {
-                const windowHeight = window.innerHeight;
+        function revealOnScroll() {
+            document.querySelectorAll('.reveal').forEach(el => {
                 const elementTop = el.getBoundingClientRect().top;
-
-                if (elementTop < windowHeight - 100) {
+                if (elementTop < window.innerHeight - 100) {
                     el.classList.add('active');
                 }
             });
-        };
-
+        }
+        revealOnScroll();
         window.addEventListener('scroll', revealOnScroll);
+
+        document.addEventListener('livewire:navigated', revealOnScroll);
+        Livewire.hook('commit', ({ succeed }) => {
+            succeed(() => {
+                requestAnimationFrame(revealOnScroll);
+            });
+        });
     </script>
 
-    <script src="https://cdn.userway.org/widget.js" data-account="fZKfHgpiYK"></script>
-
-
+</body>
 </html>

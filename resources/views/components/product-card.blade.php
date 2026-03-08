@@ -1,4 +1,4 @@
-@props(['titulo','precio','imagen','categoria','estado','rating'])
+@props(['titulo','precio','imagen','categoria','estado','rating','descripcion'])
 
 <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 group">
 
@@ -25,6 +25,10 @@
         <h3 class="text-lg font-bold">
             {{ $titulo }}
         </h3>
+
+        <p class="text-gray-600">
+            {{ $descripcion }}
+        </p>
 
         <x-rating-stars :rating="$rating" />
 

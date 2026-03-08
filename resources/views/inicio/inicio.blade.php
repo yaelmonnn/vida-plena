@@ -51,7 +51,8 @@
     </section>
 
     <!-- PRODUCTOS -->
-    <x-filtros />
+    {{-- <x-filtros /> --}}
+    <livewire:buscar-productos />
 
     <!-- SECCIÓN CONFIANZA -->
     <x-confianza />
