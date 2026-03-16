@@ -75,6 +75,46 @@ class Producto extends Model
         return collect($rows);
     }
 
+    public static function tienda(
+        string $buscar,
+        int    $precioMin,
+        int    $precioMax,
+        string $tipo,
+        string $orderSQL
+    ) {
+        $rows = DB::select("
+            SELECT
+                p.Id,
+                p.tipo,
+                c.categoria,
+                ep.estado_nombre,
+                p.nombre,
+                p.calificacion,
+                p.descripcion,
+                p.precio,
+                p.cantidad_disponible
+            FROM producto p
+            INNER JOIN categoria       c  ON c.Id  = p.categoria_id
+            INNER JOIN estado_producto ep ON ep.Id = p.estado_id
+            WHERE p.activo = 1
+              AND (
+                  ? = ''
+                  OR p.nombre      COLLATE Latin1_General_CI_AI LIKE '%' + ? + '%'
+                  OR p.descripcion COLLATE Latin1_General_CI_AI LIKE '%' + ? + '%'
+                  OR c.categoria   COLLATE Latin1_General_CI_AI LIKE '%' + ? + '%'
+              )
+              AND p.precio BETWEEN ? AND ?
+              AND (? = '' OR p.tipo = ?)
+            ORDER BY {$orderSQL}
+        ", [
+            $buscar, $buscar, $buscar, $buscar,
+            $precioMin, $precioMax,
+            $tipo, $tipo,
+        ]);
+
+        return collect($rows);
+    }
+
     /**
      * Sugerencias de búsqueda (máx. 6 resultados).
      */
