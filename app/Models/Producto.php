@@ -187,4 +187,16 @@ class Producto extends Model
         $row = DB::selectOne("SELECT nombre FROM producto WHERE Id = ?", [$id]);
         return $row?->nombre;
     }
+
+    public static function opiniones(int $id): Collection
+    {
+        return collect(DB::select("
+            SELECT Id, autor, calificacion, comentario, fr
+            FROM opinion
+            WHERE producto_id = ? AND activo = 1
+            ORDER BY fr DESC
+        ", [$id]));
+    }
+
+
 }

@@ -6,7 +6,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Producto;
 use App\Models\Categoria;
-class Tienda extends Component
+
+class BuscarProductos extends Component
 {
     use WithPagination;
 
@@ -16,12 +17,8 @@ class Tienda extends Component
     public string $tipo                    = '';
     public int    $precioMin               = 0;
     public int    $precioMax               = 0;
-    public string $ordenar                 = 'nombre';
-    public string $vista                   = 'grid';   // grid | lista
+    public string $ordenar                 = 'destacados';
     public ?int   $productoDetalle         = null;
-    public int $calificacionMin = 0;
-
-    // ──────────────────────────────── LIFECYCLE ──
 
     public function mount(): void
     {
@@ -30,36 +27,20 @@ class Tienda extends Component
         $this->precioMax = (int) $rango->maximo;
     }
 
-    // ──────────────────────────────── WATCHERS ───
-
     public function updatedBuscar(): void
     {
         $this->mostrarSugerencias = true;
         $this->resetPage();
     }
 
-    public function updatedCalificacionMin(): void
-    {
-        $this->resetPage();
-    }
-
-    public function abrirSugerencias(): void
-    {
-        $this->mostrarSugerencias = true;
-    }
-
-    public function cerrarSugerencias(): void
-    {
-        $this->mostrarSugerencias = false;
-    }
+    public function abrirSugerencias(): void  { $this->mostrarSugerencias = true; }
+    public function cerrarSugerencias(): void { $this->mostrarSugerencias = false; }
 
     public function updatedCategoriasSeleccionadas(): void { $this->resetPage(); }
     public function updatedTipo(): void                    { $this->resetPage(); }
     public function updatedPrecioMin(): void               { $this->resetPage(); }
     public function updatedPrecioMax(): void               { $this->resetPage(); }
     public function updatedOrdenar(): void                 { $this->resetPage(); }
-
-    // ──────────────────────────────── ACTIONS ────
 
     public function seleccionarSugerencia(int $id): void
     {
@@ -69,8 +50,8 @@ class Tienda extends Component
         $this->resetPage();
     }
 
-    public function abrirDetalle(int $id): void  { $this->productoDetalle = $id; }
-    public function cerrarDetalle(): void         { $this->productoDetalle = null; }
+    public function abrirDetalle(int $id): void { $this->productoDetalle = $id; }
+    public function cerrarDetalle(): void        { $this->productoDetalle = null; }
 
     public function limpiarFiltros(): void
     {
@@ -78,15 +59,12 @@ class Tienda extends Component
         $this->mostrarSugerencias      = false;
         $this->categoriasSeleccionadas = [];
         $this->tipo                    = '';
-        $this->ordenar                 = 'nombre';
+        $this->ordenar                 = 'destacados';
         $rango           = Producto::rangoPrecio();
         $this->precioMin = (int) $rango->minimo;
         $this->precioMax = (int) $rango->maximo;
-        $this->calificacionMin = 0;
         $this->resetPage();
     }
-
-    // ──────────────────────────────── RENDER ─────
 
     public function render()
     {
@@ -96,17 +74,14 @@ class Tienda extends Component
 
         $categorias = Categoria::activas();
 
-
-
         $orderSQL = match ($this->ordenar) {
-            'precio_asc'    => 'p.precio ASC',
-            'precio_desc'   => 'p.precio DESC',
-            'calificacion'  => 'p.calificacion DESC',
-            'nombre_desc'   => 'p.nombre DESC',
-            default         => 'p.nombre ASC',
+            'precio_asc'  => 'p.precio ASC',
+            'precio_desc' => 'p.precio DESC',
+            'nombre'      => 'p.nombre ASC',
+            default       => 'p.calificacion DESC, p.nombre ASC',
         };
 
-        $todos = Producto::tienda(
+        $todos = Producto::destacados(
             $this->buscar,
             $this->precioMin,
             $this->precioMax,
@@ -118,13 +93,9 @@ class Tienda extends Component
             $todos = $todos->whereIn('categoria', $this->categoriasSeleccionadas);
         }
 
-        if ($this->calificacionMin > 0) {
-            $todos = $todos->where('calificacion', '>=', $this->calificacionMin);
-        }
-
-        $perPage   = $this->vista === 'lista' ? 8 : 12;
-        $page      = $this->getPage();
-        $total     = $todos->count();
+        $perPage  = 6;
+        $page     = $this->getPage();
+        $total    = $todos->count();
         $productos = new \Illuminate\Pagination\LengthAwarePaginator(
             $todos->forPage($page, $perPage),
             $total,
@@ -136,47 +107,39 @@ class Tienda extends Component
         if (!$this->mostrarSugerencias) {
             $sugerencias = collect();
         } else {
-
             if (strlen($this->buscar) < 2) {
                 $sugerencias = Producto::query()
                     ->join('categoria', 'categoria.id', '=', 'producto.categoria_id')
                     ->inRandomOrder()
                     ->limit(3)
-                    ->get([
-                        'producto.Id',
-                        'producto.nombre',
-                        'categoria.categoria'
-                    ]);
+                    ->get(['producto.Id', 'producto.nombre', 'categoria.categoria']);
             } else {
                 $sugerencias = collect(Producto::sugerencias($this->buscar));
             }
         }
 
-        $detalleProducto = null;
-        $detalleImagenes = collect();
-        $detalleEspecifs = collect();
+        $detalleProducto  = null;
+        $detalleImagenes  = collect();
+        $detalleEspecifs  = collect();
         $detalleOpiniones = collect();
 
         if ($this->productoDetalle) {
-            $detalleProducto = Producto::detalle($this->productoDetalle);
-            $detalleImagenes = Producto::imagenes($this->productoDetalle);
-            $detalleEspecifs = Producto::especificaciones($this->productoDetalle);
+            $detalleProducto  = Producto::detalle($this->productoDetalle);
+            $detalleImagenes  = Producto::imagenes($this->productoDetalle);
+            $detalleEspecifs  = Producto::especificaciones($this->productoDetalle);
             $detalleOpiniones = Producto::opiniones($this->productoDetalle);
-
         }
 
-
-
-        return view('livewire.tienda', [
-            'productos'       => $productos,
-            'sugerencias'     => $sugerencias,
-            'categorias'      => $categorias,
-            'rangoAbsMin'     => $rangoAbsMin,
-            'rangoAbsMax'     => $rangoAbsMax,
-            'detalleProducto' => $detalleProducto,
-            'detalleImagenes' => $detalleImagenes,
-            'detalleEspecifs' => $detalleEspecifs,
-            'detalleOpiniones' => $detalleOpiniones
+        return view('livewire.buscar-productos', [
+            'productos'        => $productos,
+            'sugerencias'      => $sugerencias,
+            'categorias'       => $categorias,
+            'rangoAbsMin'      => $rangoAbsMin,
+            'rangoAbsMax'      => $rangoAbsMax,
+            'detalleProducto'  => $detalleProducto,
+            'detalleImagenes'  => $detalleImagenes,
+            'detalleEspecifs'  => $detalleEspecifs,
+            'detalleOpiniones' => $detalleOpiniones,
         ]);
     }
 }

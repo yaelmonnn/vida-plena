@@ -1,6 +1,7 @@
 @extends('layout.app')
 
 @section('content')
+@include('partials.tienda-styles')
     <!-- HERO PREMIUM -->
     <x-hero />
 

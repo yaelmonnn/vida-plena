@@ -19,7 +19,7 @@
            flex flex-col overflow-hidden border border-gray-50">
 
     {{-- ── CARRUSEL ── --}}
-    <div class="relative overflow-hidden bg-gray-100 h-56">
+    <div class="relative overflow-hidden bg-white h-56">
 
         {{-- Imágenes --}}
         <template x-if="images.length > 0">
@@ -32,7 +32,7 @@
                         x-transition:enter="transition-opacity duration-400"
                         x-transition:enter-start="opacity-0"
                         x-transition:enter-end="opacity-100"
-                        class="absolute inset-0 w-full h-full object-cover
+                        class="absolute inset-0 w-full h-full object-contain
                                group-hover:scale-105 transition-transform duration-500"
                     >
                 </template>

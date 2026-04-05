@@ -26,6 +26,9 @@
         }
     </style>
 
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+
     @livewireStyles
 </head>
 <body class="bg-gray-50 text-gray-700">
