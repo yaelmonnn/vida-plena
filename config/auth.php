@@ -36,9 +36,22 @@ return [
     */
 
     'guards' => [
+        // Guard existente de Laravel (usuarios web)
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard para clientes del e-commerce
+        'usuario' => [
+            'driver'   => 'session',
+            'provider' => 'usuarios',
+        ],
+
+        // Guard para administradores
+        'admin' => [
+            'driver'   => 'session',
+            'provider' => 'admins',
         ],
     ],
 
@@ -58,17 +71,15 @@ return [
     | Supported: "database", "eloquent"
     |
     */
-
     'providers' => [
-        'users' => [
+        'usuarios' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model'  => App\Models\Usuario::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Usuario::class,
+        ],
     ],
 
     /*
@@ -91,10 +102,16 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
+        'usuarios' => [
+            'provider' => 'usuarios',
+            'table'    => 'password_reset_tokens',
+            'expire'   => 60,
+            'throttle' => 60,
+        ],
+        'admins' => [
+            'provider' => 'admins',
+            'table'    => 'password_reset_tokens',
+            'expire'   => 30,
             'throttle' => 60,
         ],
     ],

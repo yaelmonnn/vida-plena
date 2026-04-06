@@ -34,11 +34,39 @@
                 </span>
             </button>
 
-            <button class="hidden md:flex items-center gap-2 bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition font-medium">
-                Ingresar
-                <i class="fa-solid fa-right-to-bracket text-sm"></i>
-            </button>
+            @auth('usuario')
 
+                <div class="hidden md:flex items-center gap-4">
+
+                    <!-- Bienvenida -->
+                    <div class="flex items-center gap-2 text-gray-700 font-medium">
+                        <i class="fa-solid fa-circle-user text-[#E48F62] text-lg"></i>
+                        <span>
+                            Bienvenido, {{ auth('usuario')->user()->nombre }}
+                        </span>
+                    </div>
+
+                    <!-- Botón salir -->
+                    <form method="POST" action="{{ route('logout.usuario') }}">
+                        @csrf
+                        <button type="submit"
+                            class="flex items-center gap-2 bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition font-medium">
+                            Salir
+                            <i class="fa-solid fa-right-from-bracket text-sm"></i>
+                        </button>
+                    </form>
+
+                </div>
+
+            @else
+
+                <a href="{{ route('login.usuario') }}"
+                class="hidden md:flex items-center gap-2 bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition font-medium">
+                    Ingresar
+                    <i class="fa-solid fa-right-to-bracket text-sm"></i>
+                </a>
+
+            @endauth
 
             <!-- Botón hamburguesa móvil -->
             <button @click="open = !open"
@@ -75,9 +103,38 @@
             <a href="#" class="block hover:text-[#ffbb51] transition">Contacto</a>
             <a href="#" class="block hover:text-[#ffbb51] transition">Nosotros</a>
 
-            <button class="w-full mt-4 bg-[#E48F62] text-white px-5 py-3 rounded-xl hover:bg-[#E28987] transition">
-                Ingresar
-            </button>
+                @auth('usuario')
+
+                    <div class="mt-4 space-y-4">
+
+                        <!-- Bienvenida -->
+                        <div class="flex items-center gap-2 text-gray-700 font-medium">
+                            <i class="fa-solid fa-circle-user text-[#E48F62] text-lg"></i>
+                            <span>
+                                Bienvenido, {{ auth('usuario')->user()->nombre }}
+                            </span>
+                        </div>
+
+                        <!-- Botón salir -->
+                        <form method="POST" action="{{ route('logout.usuario') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full flex items-center justify-center gap-2 bg-[#E48F62] text-white px-5 py-3 rounded-xl hover:bg-[#E28987] transition font-medium">
+                                Cerrar sesión
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                        </form>
+
+                    </div>
+
+                @else
+
+                <a href="{{ route('login.usuario') }}"
+                class="w-full mt-4 bg-[#E48F62] text-white px-5 py-3 rounded-xl hover:bg-[#E28987] transition">
+                    Ingresar
+                </a>
+
+            @endauth
 
         </div>
     </div>
