@@ -57,6 +57,16 @@ class LoginUsuarioController extends Controller
         return view('login.registro-usuario');
     }
 
+    public function sesionExpirada(Request $request): RedirectResponse
+    {
+        Auth::guard('usuario')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login.usuario')
+            ->with('info', 'Tu sesión fue cerrada por inactividad.');
+    }
+
     public function registrar(Request $request): RedirectResponse
     {
         $request->validate([

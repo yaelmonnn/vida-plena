@@ -10,9 +10,9 @@
 
         {{-- LOGO --}}
         <div style="text-align:center; margin-bottom:20px;">
-            <img src="{{ asset('images/logo.png') }}"
-                 alt="Vida Plena"
-                 style="width:120px; height:auto;">
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
+                alt="Vida Plena"
+                style="width:120px; height:auto;">
         </div>
 
         <h3 style="text-align:center; color:#333;">

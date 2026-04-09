@@ -3,7 +3,6 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginUsuarioController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AuthUsuario;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
 Route::get('/producto/{id}/imagenes', [HomeController::class, 'imagenes']);
@@ -21,4 +20,8 @@ Route::get('/verificar-cuenta', [LoginUsuarioController::class, 'verificarCuenta
 Route::post('/logout', [LoginUsuarioController::class, 'logout'])
     ->name('logout.usuario')
     ->middleware('auth:usuario');
+
+Route::get('/sesion/expirada', [LoginUsuarioController::class, 'sesionExpirada'])
+    ->name('sesion.expirada');
+
 

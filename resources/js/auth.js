@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ── Validación de contraseña en registro ───────────────────
-    const pwInput        = document.getElementById('reg_password');
+    const pwInput        = document.getElementById('password');
     const pwConfirmInput = document.getElementById('reg_password_confirmation');
     const strengthBar    = document.getElementById('pwStrength');
     const strengthLabel  = document.getElementById('pwStrengthLabel');

@@ -39,6 +39,13 @@
             </div>
         @endif
 
+        @if(session('info'))
+            <div class="auth-error" style="background:#fff7ed; border-color:#fdba74; color:#c2410c;">
+                <i class="fa-solid fa-circle-info shrink-0"></i>
+                <span>{{ session('info') }}</span>
+            </div>
+        @endif
+
         {{-- Errores globales --}}
         @if($errors->any())
         <div class="auth-error mb-4">

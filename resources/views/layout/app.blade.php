@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>VIDA PLENA</title>
 
     <link rel="icon" type="image/png" href="{{ asset('images/logo.ico') }}">
@@ -65,6 +66,47 @@
             });
         });
     </script>
+
+    @auth('usuario')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            const INACTIVIDAD_MS = 2 * 60 * 1000;
+            const LOGOUT_URL     = '{{ route('logout.usuario') }}';
+
+            let timerInactividad;
+
+            function getCsrf() {
+                return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            }
+
+            function cerrarSesionAhora() {
+                window.location.href = '{{ route('sesion.expirada') }}';
+            }
+
+            function mostrarAviso() {
+                Swal.fire({
+                    title: 'Sesión cerrada',
+                    text: 'Tu sesión fue cerrada por inactividad.',
+                    icon: 'info',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#E48F62',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                }).then(() => cerrarSesionAhora());
+            }
+
+            function resetInactividad() {
+                clearTimeout(timerInactividad);
+                timerInactividad = setTimeout(mostrarAviso, INACTIVIDAD_MS);
+            }
+
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e =>
+                document.addEventListener(e, resetInactividad, { passive: true })
+            );
+
+            resetInactividad();
+        </script>
+    @endauth
 
 </body>
 </html>
