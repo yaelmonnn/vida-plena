@@ -16,11 +16,12 @@
 
         <!-- MENU DESKTOP -->
         <div class="hidden md:flex gap-10 font-medium text-gray-700 text-lg">
-            <a href="{{ route('inicio') }}" class="hover:text-[#E48F62] transition">Inicio</a>
-            <a href="{{ route('tienda') }}" class="hover:text-[#E28987] transition">Tienda</a>
-            {{-- <a href="#" class="hover:text-[#83d77c] transition">Soluciones</a> --}}
-            <a href="#" class="hover:text-[#ffbb51] transition">Contacto</a>
-            <a href="#" class="hover:text-[#ffbb51] transition">Nosotros</a>
+            @foreach($secciones as $seccion)
+                <a href="{{ route($seccion->ruta) }}"
+                class="hover:text-[#E48F62] transition">
+                    {{ $seccion->seccion }}
+                </a>
+            @endforeach
         </div>
 
         <!-- DERECHA -->
@@ -49,7 +50,7 @@
                     <!-- Botón salir -->
                     <form method="POST" action="{{ route('logout.usuario') }}">
                         @csrf
-                        <button type="submit"
+                        <button type="submit" data-logout
                             class="flex items-center gap-2 bg-[#E48F62] text-white px-5 py-2 rounded-xl hover:bg-[#E28987] transition font-medium">
                             Salir
                             <i class="fa-solid fa-right-from-bracket text-sm"></i>
@@ -97,11 +98,13 @@
 
         <div class="px-6 py-6 space-y-4 text-lg font-medium">
 
-            <a href="{{ route('inicio') }}" class="block hover:text-[#E48F62] transition">Inicio</a>
-            <a href="{{ route('tienda') }}" class="block hover:text-[#E28987] transition">Tienda</a>
-            {{-- <a href="#" class="block hover:text-[#83d77c] transition">Soluciones</a> --}}
-            <a href="#" class="block hover:text-[#ffbb51] transition">Contacto</a>
-            <a href="#" class="block hover:text-[#ffbb51] transition">Nosotros</a>
+            @foreach ($secciones as $seccion)
+                <a href="{{ route($seccion->ruta) }}"
+                class="block hover:text-[#E48F62] transition">
+                    {{ $seccion->seccion }}
+                </a>
+
+            @endforeach
 
                 @auth('usuario')
 

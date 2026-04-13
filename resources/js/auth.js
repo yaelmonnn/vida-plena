@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Loading state en submit ────────────────────────────────
     const forms = [
         { form: 'loginForm',  btn: 'submitBtn',    label: 'Iniciando sesión...' },
-        { form: 'adminForm',  btn: 'admSubmitBtn', label: 'Accediendo...'       },
         { form: 'registerForm', btn: 'registerBtn', label: 'Creando cuenta...' },
     ];
 

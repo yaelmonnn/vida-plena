@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,11 +28,14 @@
         }
     </style>
 
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
 
 
     @livewireStyles
 </head>
+
 <body class="bg-gray-50 text-gray-700">
 
     <x-navbar />
@@ -60,7 +64,9 @@
         window.addEventListener('scroll', revealOnScroll);
 
         document.addEventListener('livewire:navigated', revealOnScroll);
-        Livewire.hook('commit', ({ succeed }) => {
+        Livewire.hook('commit', ({
+            succeed
+        }) => {
             succeed(() => {
                 requestAnimationFrame(revealOnScroll);
             });
@@ -71,7 +77,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const INACTIVIDAD_MS = 2 * 60 * 1000;
-            const LOGOUT_URL     = '{{ route('logout.usuario') }}';
+            const LOGOUT_URL = '{{ route('logout.usuario') }}';
 
             let timerInactividad;
 
@@ -101,12 +107,39 @@
             }
 
             ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e =>
-                document.addEventListener(e, resetInactividad, { passive: true })
+                document.addEventListener(e, resetInactividad, {
+                    passive: true
+                })
             );
 
             resetInactividad();
+
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('[data-logout]');
+                if (!btn) return;
+
+                e.preventDefault();
+
+                Swal.fire({
+                    title: '¿Cerrar sesión?',
+                    text: '¿Estás seguro de que quieres salir?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, salir',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#E48F62',
+                    cancelButtonColor: '#6b7280',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        btn.closest('form')?.submit() ??
+                            document.querySelector('form[action*="logout"]')?.submit();
+                    }
+                });
+            });
         </script>
     @endauth
 
 </body>
+
 </html>

@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', \App\Http\Middleware\SesionInactividad::class);
+        $middleware->alias([
+            'admin.auth' => \App\Http\Middleware\EnsureAdminAuth::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
