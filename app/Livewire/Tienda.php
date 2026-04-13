@@ -55,8 +55,43 @@ class Tienda extends Component
 
     public function updatedCategoriasSeleccionadas(): void { $this->resetPage(); }
     public function updatedTipo(): void                    { $this->resetPage(); }
-    public function updatedPrecioMin(): void               { $this->resetPage(); }
-    public function updatedPrecioMax(): void               { $this->resetPage(); }
+    public function updatedPrecioMin(): void
+    {
+        $rango = Producto::rangoPrecio();
+        $min   = (int) $rango->minimo;
+        $max   = (int) $rango->maximo;
+
+        // No permitir menor al mínimo real
+        if ($this->precioMin < $min) {
+            $this->precioMin = $min;
+        }
+
+        // No permitir mayor al máximo seleccionado
+        if ($this->precioMin > $this->precioMax) {
+            $this->precioMin = $this->precioMax;
+        }
+
+        $this->resetPage();
+    }
+
+    public function updatedPrecioMax(): void
+    {
+        $rango = Producto::rangoPrecio();
+        $min   = (int) $rango->minimo;
+        $max   = (int) $rango->maximo;
+
+        // No permitir mayor al máximo real
+        if ($this->precioMax > $max) {
+            $this->precioMax = $max;
+        }
+
+        // No permitir menor al mínimo seleccionado
+        if ($this->precioMax < $this->precioMin) {
+            $this->precioMax = $this->precioMin;
+        }
+
+        $this->resetPage();
+    }
     public function updatedOrdenar(): void                 { $this->resetPage(); }
 
     // ──────────────────────────────── ACTIONS ────

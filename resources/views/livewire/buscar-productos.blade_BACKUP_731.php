@@ -1,10 +1,6 @@
-<?php
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\Producto;
-use App\Models\Categoria;
 
+<<<<<<< HEAD
 new class extends Component
 {
     use WithPagination;
@@ -205,6 +201,8 @@ new class extends Component
     }
 };
 ?>
+=======
+>>>>>>> develop
 
 {{-- ════════════════════════════════════════════════════════
      VISTA  — Productos Destacados
