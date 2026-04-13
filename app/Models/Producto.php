@@ -28,6 +28,7 @@ class Producto extends Model
             FROM producto
             WHERE activo = 1
         ");
+        //
     }
 
     /**
