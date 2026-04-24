@@ -57,4 +57,9 @@ class Usuario extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', true);
+    }
 }

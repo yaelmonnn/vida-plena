@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class RolAdmin extends Model
 {
@@ -15,4 +16,13 @@ class RolAdmin extends Model
         'puede_categorias', 'puede_usuarios', 'puede_admins',
         'puede_pedidos', 'puede_reportes', 'activo',
     ];
+
+    public static function modulosPorUsuario($usuarioId)
+    {
+        return DB::table('cat_modulos as cm')
+            ->join('conf_modulo as cfm', 'cfm.modulo_id', '=', 'cm.Id')
+            ->where('cfm.usuario_id', $usuarioId)
+            ->select('cm.Id', 'cm.modulo', 'cm.categoria', 'cm.icono', 'cm.ruta')
+            ->get();
+    }
 }

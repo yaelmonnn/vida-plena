@@ -2,12 +2,14 @@
 
 @section('content')
 
+
+
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
 
 
 @vite('resources/css/loginUsuario.css')
 
-<div class="auth-body auth-bg">
+<div class="auth-body auth-bg mt-20">
 
     {{-- Blobs decorativos --}}
     <div class="auth-blob blob-1"></div>
@@ -113,6 +115,8 @@
                 @enderror
             </div>
 
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
             {{-- Submit --}}
             <button type="submit" class="auth-btn" id="submitBtn">
                 <i class="fa-solid fa-right-to-bracket"></i>
@@ -138,4 +142,24 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', { action: 'login' })
+                .then(function(token) {
+                    document.getElementById('g-recaptcha-response').value = token;
+                    form.submit();
+                });
+        });
+    });
+</script>
+@endpush
+
 @endsection
+
+
+
+

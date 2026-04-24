@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginUsuarioController;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\ProductoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
@@ -36,6 +37,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Rutas protegidas
     Route::middleware('admin.auth')->group(function () {
         Route::get('/dashboard', [AdminAuthController::class, 'dashboard'])->name('dashboard');
+
+        Route::get('/productos', [ProductoController::class, 'formProductos'])->name('productos');
+        Route::get('/servicios', [AdminAuthController::class, 'dashboard'])->name('servicios');
+        Route::get('/categorias', [AdminAuthController::class, 'dashboard'])->name('categorias');
+        Route::get('/pedidos', [AdminAuthController::class, 'dashboard'])->name('pedidos');
+        Route::get('/clientes', [AdminAuthController::class, 'dashboard'])->name('clientes');
+        Route::get('/usuarios', [AdminAuthController::class, 'dashboard'])->name('usuarios');
+        Route::get('/reportes', [AdminAuthController::class, 'dashboard'])->name('reportes');
+
+
         Route::post('/logout',   [AdminAuthController::class, 'logout'])->name('logout');
     });
 

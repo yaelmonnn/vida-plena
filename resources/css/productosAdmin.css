@@ -1,0 +1,394 @@
+:root {
+    --coral: #e48f62;
+    --rose: #e28987;
+    --amber: #ffbb51;
+    --ink: #1a1a2e;
+    --ink-2: #2d2d5e;
+    --cream: #fdfaf6;
+    --sidebar-w: 260px;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    background: #f5f4f0;
+}
+
+.tab-active {
+    background: var(--coral);
+    color: #fff;
+}
+
+.tab-inactive {
+    color: #9e9590;
+}
+
+/* ── Layout ── */
+.adm-wrap {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.adm-sidebar {
+    width: var(--sidebar-w);
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sidebar-brand .brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--coral), var(--rose));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.9rem;
+}
+.sidebar-brand .brand-text {
+    font-family: "Outfit", sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    color: #fff;
+    letter-spacing: 0.04em;
+}
+.sidebar-brand .brand-sub {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+.nav-section-title {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.75rem 1.25rem 0.35rem;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.6rem 1.25rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        color 0.2s;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    margin: 1px 0;
+}
+.nav-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+}
+.nav-item.active {
+    background: rgba(228, 143, 98, 0.15);
+    color: var(--coral);
+    border-left-color: var(--coral);
+}
+
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+}
+.admin-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--coral), var(--rose));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.admin-info .admin-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+}
+.admin-info .admin-rol {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    color: #f87171;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: "Lato", sans-serif;
+}
+.btn-logout:hover {
+    background: rgba(248, 113, 113, 0.22);
+}
+
+/* ── Main ── */
+.adm-main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.adm-topbar {
+    background: #fff;
+    border-bottom: 1px solid #ece8e2;
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.topbar-title {
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ink);
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.topbar-date {
+    font-size: 0.78rem;
+    color: #9e9590;
+}
+
+.adm-content {
+    padding: 2rem;
+    flex: 1;
+}
+
+/* ── Stats grid ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.stat-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    border: 1px solid #ece8e2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26, 26, 46, 0.08);
+}
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+.stat-icon.coral {
+    background: rgba(228, 143, 98, 0.12);
+    color: var(--coral);
+}
+.stat-icon.rose {
+    background: rgba(226, 137, 135, 0.12);
+    color: var(--rose);
+}
+.stat-icon.amber {
+    background: rgba(255, 187, 81, 0.15);
+    color: #d4960a;
+}
+.stat-icon.ink {
+    background: rgba(26, 26, 46, 0.08);
+    color: var(--ink);
+}
+.stat-value {
+    font-family: "Outfit", sans-serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: var(--ink);
+}
+.stat-label {
+    font-size: 0.78rem;
+    color: #9e9590;
+    font-weight: 400;
+}
+
+/* ── Welcome card ── */
+.welcome-card {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
+    border-radius: 1.25rem;
+    padding: 1.75rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+}
+.welcome-card::before {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+}
+.welcome-card::after {
+    content: "";
+    position: absolute;
+    right: 60px;
+    bottom: -80px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(228, 143, 98, 0.08);
+}
+.welcome-text h2 {
+    font-family: "Outfit", sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 0.35rem;
+}
+.welcome-text p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+.welcome-icon {
+    font-size: 2.5rem;
+    opacity: 0.6;
+}
+
+/* ── Perms ── */
+.perms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+.perm-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.6rem 0.875rem;
+    border-radius: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.perm-pill.on {
+    background: rgba(131, 215, 124, 0.12);
+    color: #2d7a27;
+    border: 1px solid rgba(131, 215, 124, 0.3);
+}
+.perm-pill.off {
+    background: rgba(228, 143, 98, 0.07);
+    color: #b07040;
+    border: 1px solid rgba(228, 143, 98, 0.2);
+}
+.perm-pill i {
+    font-size: 0.75rem;
+}
+
+.section-title {
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: 1rem;
+}
+
+/* ── Responsive ── */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink);
+    font-size: 1.1rem;
+    padding: 0.25rem;
+}
+@media (max-width: 768px) {
+    .adm-sidebar {
+        transform: translateX(-100%);
+    }
+    .adm-sidebar.open {
+        transform: translateX(0);
+    }
+    .adm-main {
+        margin-left: 0;
+    }
+    .menu-toggle {
+        display: flex;
+    }
+    .adm-content {
+        padding: 1rem;
+    }
+    .adm-topbar {
+        padding: 0 1rem;
+    }
+    .welcome-icon {
+        display: none;
+    }
+}

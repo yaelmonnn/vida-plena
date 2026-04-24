@@ -3,6 +3,7 @@
 
 @section('content')
 
+
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
 @vite('resources/css/dashboardAdmin.css')
@@ -11,90 +12,7 @@
 <div class="adm-wrap">
 
     {{-- Sidebar --}}
-    <aside class="adm-sidebar" id="sidebar">
-
-        <div class="sidebar-brand">
-            <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-            <div>
-                <div class="brand-text">Vida Plena</div>
-                <div class="brand-sub">Admin Panel</div>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="nav-section-title">General</div>
-            <a href="{{ route('admin.dashboard') }}" class="nav-item active">
-                <i class="fa-solid fa-gauge"></i> Dashboard
-            </a>
-
-            @php $perms = session('admin_perms', []); @endphp
-
-            @if(!empty($perms['puede_productos']))
-            <div class="nav-section-title">Catálogo</div>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-box-open"></i> Productos
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_servicios']))
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-spa"></i> Servicios
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_categorias']))
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-tags"></i> Categorías
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_pedidos']))
-            <div class="nav-section-title">Ventas</div>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-bag-shopping"></i> Pedidos
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_usuarios']))
-            <div class="nav-section-title">Usuarios</div>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-users"></i> Clientes
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_admins']))
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-user-shield"></i> Administradores
-            </a>
-            @endif
-
-            @if(!empty($perms['puede_reportes']))
-            <div class="nav-section-title">Reportes</div>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-chart-line"></i> Reportes
-            </a>
-            @endif
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="admin-profile">
-                <div class="admin-avatar">
-                    {{ strtoupper(substr(session('admin_nombre', 'A'), 0, 1)) }}
-                </div>
-                <div class="admin-info">
-                    <div class="admin-name">{{ session('admin_nombre') }}</div>
-                    <div class="admin-rol">{{ session('admin_rol') }}</div>
-                </div>
-            </div>
-            <form method="POST" action="{{ route('admin.logout') }}">
-                @csrf
-                <button type="submit" class="btn-logout" data-admin-logout>
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    Cerrar sesión
-                </button>
-            </form>
-        </div>
-    </aside>
+    <x-admin.sidebar :modulos="$modulos" />
 
     {{-- Main --}}
     <div class="adm-main">
@@ -136,49 +54,48 @@
 
             {{-- Stats --}}
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon coral"><i class="fa-solid fa-users"></i></div>
-                    <div class="stat-value">—</div>
-                    <div class="stat-label">Usuarios registrados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon rose"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <div class="stat-value">—</div>
-                    <div class="stat-label">Pedidos totales</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon amber"><i class="fa-solid fa-box-open"></i></div>
-                    <div class="stat-value">—</div>
-                    <div class="stat-label">Productos activos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon ink"><i class="fa-solid fa-spa"></i></div>
-                    <div class="stat-value">—</div>
-                    <div class="stat-label">Servicios activos</div>
-                </div>
+
+                <x-admin.stat-card
+                    icon="fa-users"
+                    :value="$totalUsuarios"
+                    label="Usuarios registrados"
+                    color="coral"
+                />
+
+                <x-admin.stat-card
+                    icon="fa-bag-shopping"
+                    value="_"
+                    label="Pedidos totales"
+                    color="rose"
+                />
+
+                <x-admin.stat-card
+                    icon="fa-box-open"
+                    :value="$totalProductos"
+                    label="Productos activos"
+                    color="amber"
+                />
+
+                <x-admin.stat-card
+                    icon="fa-spa"
+                    :value="$totalServicios"
+                    label="Servicios activos"
+                    color="ink"
+                />
+
             </div>
 
             {{-- Permisos --}}
             <p class="section-title">Tus permisos</p>
-            @php
-                $permLabels = [
-                    'puede_productos'  => ['Productos',      'fa-box-open'],
-                    'puede_servicios'  => ['Servicios',      'fa-spa'],
-                    'puede_categorias' => ['Categorías',     'fa-tags'],
-                    'puede_usuarios'   => ['Usuarios',       'fa-users'],
-                    'puede_admins'     => ['Admins',         'fa-user-shield'],
-                    'puede_pedidos'    => ['Pedidos',        'fa-bag-shopping'],
-                    'puede_reportes'   => ['Reportes',       'fa-chart-line'],
-                ];
-            @endphp
             <div class="perms-grid">
-                @foreach($permLabels as $key => [$label, $icon])
-                    @php $val = !empty($perms[$key]); @endphp
-                    <div class="perm-pill {{ $val ? 'on' : 'off' }}">
-                        <i class="fa-solid {{ $icon }}"></i>
-                        {{ $label }}
-                        <i class="fa-solid {{ $val ? 'fa-check' : 'fa-xmark' }}" style="margin-left:auto"></i>
+                @foreach($modulos as $mod)
+
+                    <div class="perm-pill on">
+                        <i class="{{ $mod->icono }}"></i>
+                        {{ $mod->modulo }}
+                        <i class="fa-solid fa-check" style="margin-left:auto"></i>
                     </div>
+
                 @endforeach
             </div>
 

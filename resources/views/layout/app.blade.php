@@ -48,7 +48,9 @@
 
     <script src="https://kit.fontawesome.com/1e0bbd4af0.js" crossorigin="anonymous"></script>
     <script src="https://cdn.userway.org/widget.js" data-account="fZKfHgpiYK"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
 
+    @stack('scripts')
     @livewireScripts
 
     <script>

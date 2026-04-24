@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Administrador;
+use App\Models\Producto;
+use App\Models\RolAdmin;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class AdminAuthController extends Controller
 {
@@ -42,6 +47,29 @@ class AdminAuthController extends Controller
             'password.required' => 'La contraseña es obligatoria.',
         ]);
 
+
+        $recaptchaToken = $request->input('g-recaptcha-response');
+
+        if (!$recaptchaToken) {
+            return back()->withErrors([
+                'email' => 'Verificación de seguridad requerida.'
+            ]);
+        }
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => config('services.recaptcha.secret_key'),
+            'response' => $recaptchaToken,
+            'remoteip' => $request->ip(),
+        ]);
+
+        $recaptchaData = $response->json();
+
+        if (!($recaptchaData['success'] ?? false) || ($recaptchaData['score'] ?? 0) < 0.5) {
+            throw ValidationException::withMessages([
+                'email' => 'Verificación de seguridad fallida. Intenta de nuevo.',
+            ]);
+        }
+
         $admin = Administrador::with('rol')
             ->where('email', $request->email)
             ->where('activo', 1)
@@ -64,13 +92,26 @@ class AdminAuthController extends Controller
         ]);
 
 
+
         return redirect()->route('admin.dashboard')
             ->with('success', '¡Bienvenido, ' . $admin->nombre . '!');
     }
 
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $totalUsuariosActivos = Usuario::activos()->count();
+
+        $totalProductosActivos = Producto::productosActivos()->first()->total ?? 0;
+        $totalServiciosActivos = Producto::serviciosActivos()->first()->total ?? 0;
+
+        $modulos = RolAdmin::modulosPorUsuario(session('admin_id'));
+
+        return view('admin.dashboard', [
+            'totalUsuarios' => $totalUsuariosActivos,
+            'totalProductos' => $totalProductosActivos,
+            'totalServicios' => $totalServiciosActivos,
+            'modulos' => $modulos
+        ]);
     }
 
     public function logout(Request $request)
