@@ -200,5 +200,15 @@ class Producto extends Model
         ", [$id]));
     }
 
+    public function scopeProductosActivos($query)
+    {
+        return collect(DB::select("SELECT COUNT(*) as total FROM producto WHERE activo = 1 AND tipo = 'producto'"));
+    }
+
+    public function scopeServiciosActivos($query)
+    {
+        return collect(DB::select("SELECT COUNT(*) as total FROM producto WHERE activo = 1 AND tipo = 'servicio'"));
+    }
+
 
 }

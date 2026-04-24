@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificarCuentaMail;
@@ -27,6 +28,30 @@ class LoginUsuarioController extends Controller
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        $recaptchaToken = $request->input('g-recaptcha-response');
+
+        if (!$recaptchaToken) {
+            throw ValidationException::withMessages([
+                'email' => 'Por favor completa la verificación de seguridad.',
+            ]);
+        }
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => config('services.recaptcha.secret_key'),
+            'response' => $recaptchaToken,
+            'remoteip' => $request->ip(),
+        ]);
+
+        $recaptchaData = $response->json();
+
+
+        if (!($recaptchaData['success'] ?? false) || ($recaptchaData['score'] ?? 0) < 0.5) {
+            throw ValidationException::withMessages([
+                'email' => 'Verificación de seguridad fallida. Intenta de nuevo.',
+            ]);
+        }
+
 
         $usuario = Usuario::where('email', $request->email)->first();
 

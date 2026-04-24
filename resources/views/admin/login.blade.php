@@ -66,7 +66,7 @@
         @endif
 
         {{-- Formulario --}}
-        <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-4" id="adminForm">
             @csrf
 
             {{-- Email --}}
@@ -107,6 +107,8 @@
                 </div>
             </div>
 
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
             {{-- Submit --}}
             <button type="submit" class="auth-btn">
                 <i class="fa-solid fa-right-to-bracket"></i>
@@ -126,6 +128,22 @@
         const show = input.type === 'password';
         input.type = show ? 'text' : 'password';
         icon.className = show ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    });
+</script>
+
+<script>
+    document.getElementById('adminForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = this;
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ config("services.recaptcha.site_key") }}', { action: 'admin_login' })
+                .then(function(token) {
+                    document.getElementById('g-recaptcha-response').value = token;
+                    form.submit();
+                });
+        });
     });
 </script>
 
