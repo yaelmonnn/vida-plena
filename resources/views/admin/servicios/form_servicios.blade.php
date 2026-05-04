@@ -17,7 +17,7 @@
                     <button class="menu-toggle" id="menuToggle">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <span class="topbar-title">Productos</span>
+                    <span class="topbar-title">Servicios</span>
                 </div>
                 <div class="topbar-right">
                     <span class="topbar-date">
@@ -38,7 +38,7 @@
                 @endif
 
                 {{-- Título de sección --}}
-                <p class="section-title">Gestión de productos</p>
+                <p class="section-title">Gestión de servicios</p>
 
                 {{-- Tabs toggle --}}
                 <div class="inline-flex items-center bg-white border border-gray-200 rounded-xl p-1 mb-6 shadow-sm">
@@ -50,20 +50,16 @@
                     <button id="tab-add" onclick="switchTab('add')"
                         class="tab-inactive flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        Agregar producto
+                        Agregar servicio
                     </button>
-
                 </div>
 
                 <div id="panel-search">
 
-                    {{-- Resultados (estáticos de ejemplo) --}}
+                    {{-- Resultados con DataTable --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-5">
                         <div class="divide-y divide-gray-100">
 
-
-
-                            {{-- Resultados con DataTable --}}
                             <div class="bg-white mb-5">
                                 <div class="px-5 py-4 border-b border-gray-100">
                                     <p class="text-sm font-semibold text-gray-700">Resultados</p>
@@ -73,10 +69,10 @@
                                         <thead>
                                             <tr>
                                                 <th>Folio</th>
-                                                <th>Producto</th>
+                                                <th>Servicio</th>
                                                 <th>Categoría</th>
                                                 <th>Precio</th>
-                                                <th>Estado</th>
+                                                <th>Disponibilidad</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -86,7 +82,6 @@
                                                     data-categoria="{{ $p->categoria }}"
                                                     data-categoria-id="{{ $p->categoria_id }}"
                                                     data-precio="{{ $p->precio_raw }}"
-                                                    data-estado-id="{{ $p->estado_id }}"
                                                     data-disponibilidad="{{ $p->disponibilidad }}"
                                                     data-descripcion="{{ $p->descripcion }}"
                                                     data-cantidad="{{ $p->cantidad_disponible }}">
@@ -95,8 +90,7 @@
                                                         <div class="flex items-center gap-3">
                                                             <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs flex-shrink-0"
                                                                 style="background:rgba(228,143,98,.1); color:var(--coral)">
-                                                                <i
-                                                                    class="fa-solid {{ $p->tipo === 'servicio' ? 'fa-spa' : 'fa-box-open' }}"></i>
+                                                                <i class="fa-solid fa-spa"></i>
                                                             </div>
                                                             <span
                                                                 class="text-sm font-semibold text-gray-800">{{ $p->nombre }}</span>
@@ -108,7 +102,7 @@
                                                     <td>
                                                         <span
                                                             class="text-xs font-semibold px-2.5 py-1 rounded-full
-                                {{ $p->disponibilidad === 'Disponible' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-500' }}">
+                                                            {{ $p->disponibilidad === 'Disponible' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-500' }}">
                                                             {{ $p->disponibilidad }}
                                                         </span>
                                                     </td>
@@ -129,10 +123,10 @@
                         </div>
                     </div>
 
-                    {{-- Formulario de edición (aparece al hacer clic en Editar) --}}
+                    {{-- Formulario de edición --}}
                     <div id="editForm" class="hidden">
                         <div class="flex items-center justify-between mb-4">
-                            <p class="section-title mb-0">Editar producto</p>
+                            <p class="section-title mb-0">Editar servicio</p>
                             <button onclick="closeEdit()"
                                 class="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
                                 <i class="fa-solid fa-xmark"></i> Cerrar
@@ -164,16 +158,6 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
-                                    <select id="edit-estado" name="estado_id"
-                                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition">
-                                        @foreach ($estados as $est)
-                                            <option value="{{ $est->Id }}">{{ $est->estado_nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
                                     <div class="relative">
                                         <span
@@ -184,8 +168,7 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Cantidad
-                                        disponible</label>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Cantidad disponible</label>
                                     <input type="number" id="edit-cantidad" name="cantidad_disponible"
                                         class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition">
                                 </div>
@@ -205,14 +188,13 @@
                                 </div>
 
                                 <div id="edit-img-upload-wrap">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Subir nuevas
-                                        imágenes</label>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Subir nuevas imágenes</label>
                                     <div class="flex gap-3 items-center">
                                         <input type="file" id="edit-nuevas-imagenes" multiple accept="image/*"
                                             class="flex-1 text-sm border border-gray-300 rounded-lg p-2 bg-white
-                       file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
-                       file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
-                       hover:file:bg-gray-200 cursor-pointer">
+                                            file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
+                                            file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
+                                            hover:file:bg-gray-200 cursor-pointer">
                                         <button type="button" id="btnSubirImagenes"
                                             class="flex items-center gap-2 text-white text-sm font-bold px-4 py-2 rounded-xl transition hover:opacity-90 whitespace-nowrap"
                                             style="background:var(--coral)">
@@ -227,7 +209,7 @@
                             <label class="flex items-center gap-2 cursor-pointer w-fit">
                                 <input type="checkbox" name="activo" id="edit-activo" checked
                                     class="w-4 h-4 rounded border-gray-300 accent-(--coral)">
-                                <span class="text-sm text-gray-700 font-medium">Producto activo</span>
+                                <span class="text-sm text-gray-700 font-medium">Servicio activo</span>
                             </label>
 
                             <div class="flex items-center gap-3 pt-1">
@@ -256,11 +238,9 @@
 
                 </div>
 
-                {{-- ─────────────────────────────────────────
-                 PANEL A: AGREGAR PRODUCTO
-            ───────────────────────────────────────── --}}
+                {{-- PANEL: AGREGAR SERVICIO --}}
                 <div id="panel-add" class="hidden">
-                    <form method="POST" action="{{ route('admin.productos.store') }}"
+                    <form method="POST" action="{{ route('admin.servicios.store') }}"
                         class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6"
                         enctype="multipart/form-data">
                         @csrf
@@ -269,9 +249,9 @@
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre</label>
-                                <input type="text" name="nombre" placeholder="Ej. Barandal de seguridad"
+                                <input type="text" name="nombre" placeholder="Ej. Instalación de barandal"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition
-                           @error('nombre') border-red-400 @enderror">
+                                    @error('nombre') border-red-400 @enderror">
                                 @error('nombre')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                                 @enderror
@@ -281,7 +261,7 @@
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Categoría</label>
                                 <select name="categoria_id"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition
-                           @error('categoria_id') border-red-400 @enderror">
+                                    @error('categoria_id') border-red-400 @enderror">
                                     <option value="">Selecciona una categoría</option>
                                     @foreach ($categorias as $cat)
                                         <option value="{{ $cat->Id }}"
@@ -296,24 +276,6 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
-                                <select name="estado_id"
-                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition
-                           @error('estado_id') border-red-400 @enderror">
-                                    <option value="">Selecciona un estado</option>
-                                    @foreach ($estados as $est)
-                                        <option value="{{ $est->Id }}"
-                                            {{ old('estado_id') == $est->Id ? 'selected' : '' }}>
-                                            {{ $est->estado_nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('estado_id')
-                                    <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
                                 <div class="relative">
                                     <span
@@ -321,7 +283,7 @@
                                     <input type="number" step="0.01" name="precio" placeholder="0.00"
                                         value="{{ old('precio') }}"
                                         class="w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm transition
-                               @error('precio') border-red-400 @enderror">
+                                        @error('precio') border-red-400 @enderror">
                                 </div>
                                 @error('precio')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
@@ -333,7 +295,7 @@
                                 <input type="number" name="cantidad_disponible" placeholder="0"
                                     value="{{ old('cantidad_disponible') }}"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition
-                           @error('cantidad_disponible') border-red-400 @enderror">
+                                    @error('cantidad_disponible') border-red-400 @enderror">
                                 @error('cantidad_disponible')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                                 @enderror
@@ -343,7 +305,7 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
-                            <textarea name="descripcion" rows="3" placeholder="Describe brevemente el producto o servicio..."
+                            <textarea name="descripcion" rows="3" placeholder="Describe brevemente el servicio..."
                                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none transition">{{ old('descripcion') }}</textarea>
                         </div>
 
@@ -354,9 +316,9 @@
                             </label>
                             <input type="file" name="imagenes[]" multiple accept="image/*" id="fileInput"
                                 class="w-full text-sm border border-gray-300 rounded-lg p-2 bg-white
-                       file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
-                       file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
-                       hover:file:bg-gray-200 cursor-pointer">
+                                file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
+                                file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
+                                hover:file:bg-gray-200 cursor-pointer">
                             @error('imagenes')
                                 <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                             @enderror
@@ -366,7 +328,7 @@
                         <label class="flex items-center gap-2 cursor-pointer w-fit">
                             <input type="checkbox" name="activo" checked
                                 class="w-4 h-4 rounded border-gray-300 accent-(--coral)">
-                            <span class="text-sm text-gray-700 font-medium">Producto activo</span>
+                            <span class="text-sm text-gray-700 font-medium">Servicio activo</span>
                         </label>
 
                         <div class="flex items-center gap-3 pt-1">
@@ -374,7 +336,7 @@
                                 class="flex items-center gap-2 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
                                 style="background:var(--coral)">
                                 <i class="fa-solid fa-floppy-disk"></i>
-                                Guardar producto
+                                Guardar servicio
                             </button>
                             <button type="reset" onclick="document.getElementById('previewContainer').innerHTML=''"
                                 class="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
@@ -384,11 +346,6 @@
 
                     </form>
                 </div>
-
-                {{-- ─────────────────────────────────────────
-                 PANEL B: BUSCAR Y EDITAR
-            ───────────────────────────────────────── --}}
-
 
             </main>
         </div>
@@ -438,7 +395,6 @@
                 return;
             }
 
-            // Ocultar upload si ya hay 5
             document.getElementById('edit-img-upload-wrap').style.display = imgs.length >= 5 ? 'none' : '';
 
             imgs.forEach(img => {
@@ -450,12 +406,10 @@
                 el.alt = img.alt_text ?? '';
                 el.className = 'w-20 h-20 object-cover rounded-xl border border-gray-200 shadow-sm';
 
-                // Badge de orden
                 const badge = document.createElement('span');
                 badge.className = 'absolute top-1 left-1 text-xs font-bold bg-black/50 text-white rounded px-1';
                 badge.textContent = img.orden === 0 ? '★' : img.orden;
 
-                // Botón eliminar
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className =
@@ -475,7 +429,7 @@
             const contenedor = document.getElementById('edit-imagenes-actuales');
             contenedor.innerHTML = '<p class="text-xs text-gray-400 italic">Cargando imágenes...</p>';
 
-            fetch(`{{ url('admin/productos') }}/${id}/imagenes`)
+            fetch(`{{ url('admin/servicios') }}/${id}/imagenes`)
                 .then(r => r.json())
                 .then(imgs => renderImagenes(imgs))
                 .catch(() => {
@@ -542,7 +496,7 @@
             this.disabled = true;
             this.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Subiendo...';
 
-            fetch(`{{ url('admin/productos') }}/${productoId}/imagenes`, {
+            fetch(`{{ url('admin/servicios') }}/${productoId}/imagenes`, {
                     method: 'POST',
                     body: formData,
                 })
@@ -583,13 +537,8 @@
 
             document.querySelector('#formEditar select[name="categoria_id"]').value = row.dataset.categoriaId;
 
-
-            document.getElementById('edit-estado').value = row.dataset.estadoId;
-
-
-            document.getElementById('formEditar').action = `{{ url('admin/productos') }}/${id}`;
-            document.getElementById('formEliminar').action = `{{ url('admin/productos') }}/${id}`;
-
+            document.getElementById('formEditar').action = `{{ url('admin/servicios') }}/${id}`;
+            document.getElementById('formEliminar').action = `{{ url('admin/servicios') }}/${id}`;
 
             document.getElementById('btnEliminar').dataset.id = id;
             document.getElementById('btnEliminar').dataset.nombre = row.dataset.nombre;
@@ -600,26 +549,18 @@
                 block: 'start'
             });
 
-
-            // ── Imágenes existentes ──
-            const contenedor = document.getElementById('edit-imagenes-actuales');
-            contenedor.innerHTML = '<p class="text-xs text-gray-400 italic">Cargando imágenes...</p>';
-
             cargarImagenes(id);
-
-
         }
 
         function closeEdit() {
             document.getElementById('editForm').classList.add('hidden');
         }
 
-
         document.getElementById('btnEliminar').addEventListener('click', function() {
             const nombre = this.dataset.nombre;
 
             Swal.fire({
-                title: '¿Eliminar producto?',
+                title: '¿Eliminar servicio?',
                 html: `<span class="text-gray-600 text-sm">Estás a punto de eliminar <strong>${nombre}</strong>. Esta acción no se puede deshacer.</span>`,
                 icon: 'warning',
                 showCancelButton: true,
@@ -634,10 +575,6 @@
                 }
             });
         });
-
-        function closeEdit() {
-            document.getElementById('editForm').classList.add('hidden');
-        }
 
         // ── Preview imágenes ──
         document.getElementById('fileInput')?.addEventListener('change', function() {

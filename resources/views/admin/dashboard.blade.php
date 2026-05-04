@@ -85,20 +85,6 @@
 
             </div>
 
-            {{-- Permisos --}}
-            <p class="section-title">Tus permisos</p>
-            <div class="perms-grid">
-                @foreach($modulos as $mod)
-
-                    <div class="perm-pill on">
-                        <i class="{{ $mod->icono }}"></i>
-                        {{ $mod->modulo }}
-                        <i class="fa-solid fa-check" style="margin-left:auto"></i>
-                    </div>
-
-                @endforeach
-            </div>
-
         </main>
     </div>
 </div>
