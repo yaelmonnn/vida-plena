@@ -42,7 +42,7 @@
             </div>
             <div class="admin-info">
                 <div class="admin-name">{{ session('admin_nombre') }}</div>
-                <div class="admin-rol">{{ session('admin_rol') }}</div>
+                <div class="admin-rol">{{ session('admin_email') }}</div>
             </div>
         </div>
 

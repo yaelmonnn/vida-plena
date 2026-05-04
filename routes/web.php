@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginUsuarioController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CategoriaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
@@ -45,6 +46,26 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/clientes', [AdminAuthController::class, 'dashboard'])->name('clientes');
         Route::get('/usuarios', [AdminAuthController::class, 'dashboard'])->name('usuarios');
         Route::get('/reportes', [AdminAuthController::class, 'dashboard'])->name('reportes');
+        Route::get('/productos/{id}/imagenes', [ProductoController::class, 'imagenes'])->name('productos.imagenes');
+        Route::post('/productos/{id}/imagenes',         [ProductoController::class, 'agregarImagenes'])->name('productos.imagenes.agregar');
+        Route::delete('/productos/imagenes/{imagenId}', [ProductoController::class, 'eliminarImagen'])->name('productos.imagenes.eliminar');
+        Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
+        Route::put('/productos/{id}',    [ProductoController::class, 'update'])->name('productos.update');
+        Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+
+
+        Route::get('/servicios',                        [ProductoController::class, 'formServicios'])->name('servicios');
+        Route::get('/servicios/{id}/imagenes',          [ProductoController::class, 'imagenes'])->name('servicios.imagenes');
+        Route::post('/servicios/{id}/imagenes',         [ProductoController::class, 'agregarImagenes'])->name('servicios.imagenes.agregar');
+        Route::delete('/servicios/imagenes/{imagenId}', [ProductoController::class, 'eliminarImagen'])->name('servicios.imagenes.eliminar');
+        Route::post('/servicios',                       [ProductoController::class, 'storeServicio'])->name('servicios.store');
+        Route::put('/servicios/{id}',                   [ProductoController::class, 'updateServicio'])->name('servicios.update');
+        Route::delete('/servicios/{id}',                [ProductoController::class, 'destroyServicio'])->name('servicios.destroy');
+
+        Route::get('/categorias',         [CategoriaController::class, 'index'])->name('categorias');
+        Route::post('/categorias',        [CategoriaController::class, 'store'])->name('categorias.store');
+        Route::put('/categorias/{id}',    [CategoriaController::class, 'update'])->name('categorias.update');
+        Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
 
         Route::post('/logout',   [AdminAuthController::class, 'logout'])->name('logout');

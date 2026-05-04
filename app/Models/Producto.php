@@ -158,7 +158,7 @@ class Producto extends Model
     public static function imagenes(int $id): Collection
     {
         $imagenes = DB::select("
-            SELECT ruta, alt_text, orden
+            SELECT Id, ruta, alt_text, orden
             FROM imagenes_producto
             WHERE producto_id = ?
             ORDER BY orden ASC
@@ -189,6 +189,46 @@ class Producto extends Model
         return $row?->nombre;
     }
 
+    public static function traerTodosActivos(): Collection {
+        return collect(DB::select("
+            SELECT
+                p.Id,
+                p.nombre,
+                c.categoria,
+                FORMAT(p.precio, 'C', 'es-MX') AS precio_fmt,
+                p.precio AS precio_raw,
+                p.descripcion,
+                p.cantidad_disponible,
+                CASE WHEN p.cantidad_disponible > 0 THEN 'Disponible' ELSE 'Agotado' END AS disponibilidad,
+                p.tipo,
+                p.categoria_id,
+                p.estado_id
+            FROM producto p
+            INNER JOIN categoria c ON c.Id = p.categoria_id
+            WHERE activo = 1 AND tipo = 'producto'
+        "));
+    }
+
+    public static function traerTodosServiciosActivos(): Collection {
+        return collect(DB::select("
+            SELECT
+                p.Id,
+                p.nombre,
+                c.categoria,
+                FORMAT(p.precio, 'C', 'es-MX') AS precio_fmt,
+                p.precio AS precio_raw,
+                p.descripcion,
+                p.cantidad_disponible,
+                CASE WHEN p.cantidad_disponible > 0 THEN 'Disponible' ELSE 'Agotado' END AS disponibilidad,
+                p.tipo,
+                p.categoria_id,
+                p.estado_id
+            FROM producto p
+            INNER JOIN categoria c ON c.Id = p.categoria_id
+            WHERE activo = 1 AND tipo = 'servicio'
+        "));
+    }
+
     public static function opiniones(int $id): Collection
     {
         return collect(DB::select("
@@ -209,6 +249,8 @@ class Producto extends Model
     {
         return collect(DB::select("SELECT COUNT(*) as total FROM producto WHERE activo = 1 AND tipo = 'servicio'"));
     }
+
+
 
 
 }

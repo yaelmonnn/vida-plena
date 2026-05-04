@@ -148,7 +148,6 @@ body {
 .admin-info .admin-rol {
     font-size: 0.68rem;
     color: rgba(255, 255, 255, 0.4);
-    text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 
