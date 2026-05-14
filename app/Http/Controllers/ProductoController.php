@@ -66,7 +66,7 @@ class ProductoController extends Controller
 
     public function imagenes(int $id): JsonResponse
     {
-        $imagenes = Producto::imagenes($id);
+        $imagenes = Producto::traerImagenes($id);
         return response()->json($imagenes);
     }
 
@@ -158,7 +158,7 @@ class ProductoController extends Controller
             );
         }
 
-        return response()->json(Producto::imagenes($id));
+        return response()->json(Producto::traerImagenes($id));
     }
 
     public function eliminarImagen(int $imagenId): JsonResponse
@@ -188,7 +188,7 @@ class ProductoController extends Controller
             [$imagen->producto_id, $imagen->orden]
         );
 
-        return response()->json(Producto::imagenes($imagen->producto_id));
+        return response()->json(Producto::traerImagenes($imagen->producto_id));
     }
 
     public function destroy(int $id)

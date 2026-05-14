@@ -29,10 +29,14 @@
             </p>
 
             @if ($errors->any())
-                <div class="auth-error mb-4">
-                    <i class="fa-solid fa-circle-exclamation shrink-0"></i>
-                    <span>{{ $errors->first() }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '{{ $errors->first() }}',
+                        confirmButtonColor: '#E48F62'
+                    });
+                </script>
             @endif
 
             <form method="POST" action="{{ route('registro') }}" id="registerForm" class="form-cols">

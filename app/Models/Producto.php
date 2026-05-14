@@ -155,7 +155,7 @@ class Producto extends Model
     /**
      * Imágenes del carrusel de un producto.
      */
-    public static function imagenes(int $id): Collection
+    public static function traerImagenes(int $id): Collection
     {
         $imagenes = DB::select("
             SELECT Id, ruta, alt_text, orden
@@ -165,6 +165,12 @@ class Producto extends Model
         ", [$id]);
 
         return collect($imagenes);
+    }
+
+    public function imagenes()
+    {
+        return $this->hasMany(ImagenProducto::class, 'producto_id', 'Id')
+                    ->orderBy('orden');
     }
 
     /**

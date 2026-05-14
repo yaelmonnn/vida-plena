@@ -45,24 +45,36 @@
         </p>
 
         @if(session('success'))
-            <div class="auth-success mb-4">
-                <i class="fa-solid fa-circle-check"></i>
-                <span>{{ session('success') }}</span>
-            </div>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: @json(session('success')),
+                confirmButtonColor: '#e48f62',
+            });
+        </script>
         @endif
 
         @if(session('info'))
-            <div class="auth-error mb-4" style="background:#fff7ed; border-color:#fdba74; color:#c2410c;">
-                <i class="fa-solid fa-circle-info shrink-0"></i>
-                <span>{{ session('info') }}</span>
-            </div>
+        <script>
+            Swal.fire({
+                icon: 'info',
+                title: 'Información',
+                text: @json(session('info')),
+                confirmButtonColor: '#e48f62',
+            });
+        </script>
         @endif
 
         @if($errors->any())
-            <div class="auth-error mb-4">
-                <i class="fa-solid fa-circle-exclamation shrink-0"></i>
-                <span>{{ $errors->first() }}</span>
-            </div>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Acceso denegado',
+                text: @json($errors->first()),
+                confirmButtonColor: '#e48f62',
+            });
+        </script>
         @endif
 
         {{-- Formulario --}}

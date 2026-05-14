@@ -32,6 +32,9 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap"
         rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
     @livewireStyles
 </head>
@@ -45,6 +48,10 @@
     </main>
 
     <x-footer />
+
+    <script>
+        window.__auth = {{ Auth::guard('usuario')->check() ? 'true' : 'false' }};
+    </script>
 
     <script src="https://kit.fontawesome.com/1e0bbd4af0.js" crossorigin="anonymous"></script>
     <script src="https://cdn.userway.org/widget.js" data-account="fZKfHgpiYK"></script>
@@ -76,7 +83,6 @@
     </script>
 
     @auth('usuario')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const INACTIVIDAD_MS = 2 * 60 * 1000;
             const LOGOUT_URL = '{{ route('logout.usuario') }}';

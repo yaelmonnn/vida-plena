@@ -4,7 +4,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginUsuarioController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\DeseoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
@@ -22,12 +24,26 @@ Route::middleware('guest:usuario')->group(function () {
 
 Route::get('/verificar-cuenta', [LoginUsuarioController::class, 'verificarCuenta']);
 
+Route::middleware('auth:usuario')->group(function () {
+    Route::get('/carrito',              [CarritoController::class, 'index'])->name('carrito');
+    Route::post('/carrito/agregar',     [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::delete('/carrito/{id}',      [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::patch('/carrito/{id}/cantidad', [CarritoController::class, 'actualizarCantidad'])->name('carrito.cantidad');
+    Route::get('/mis-deseos',                [DeseoController::class, 'index'])->name('deseos');
+    Route::post('/deseos/toggle',            [DeseoController::class, 'toggle'])->name('deseos.toggle');
+    Route::delete('/deseos/{productoId}',    [DeseoController::class, 'quitar'])->name('deseos.quitar');
+    Route::get('/deseos/mis-ids',            [DeseoController::class, 'misIds'])->name('deseos.ids');
+});
+
 Route::post('/logout', [LoginUsuarioController::class, 'logout'])
     ->name('logout.usuario')
     ->middleware('auth:usuario');
 
 Route::get('/sesion/expirada', [LoginUsuarioController::class, 'sesionExpirada'])
     ->name('sesion.expirada');
+
+Route::post('/reenviar-verificacion', [LoginUsuarioController::class, 'reenviarVerificacion'])->name('reenviar.verificacion');
+
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -66,6 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/categorias',        [CategoriaController::class, 'store'])->name('categorias.store');
         Route::put('/categorias/{id}',    [CategoriaController::class, 'update'])->name('categorias.update');
         Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+
 
 
         Route::post('/logout',   [AdminAuthController::class, 'logout'])->name('logout');

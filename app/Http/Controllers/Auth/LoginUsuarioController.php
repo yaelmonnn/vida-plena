@@ -93,6 +93,31 @@ class LoginUsuarioController extends Controller
             ->with('info', 'Tu sesión fue cerrada por inactividad.');
     }
 
+    public function reenviarVerificacion(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('reenvio', [
+            'email' => ['required', 'email'],
+        ]);
+
+        $usuario = Usuario::where('email', $request->email)
+                        ->where('activo', 0)
+                        ->first();
+
+        // Respuesta genérica para no revelar si el correo existe o no
+        if (!$usuario) {
+            return back()->with('success', 'Si el correo existe y no está verificado, recibirás un nuevo enlace.');
+        }
+
+        $token = JWTAuth::customClaims(['tipo' => 'verificacion'])->fromUser($usuario);
+        $link  = url("/verificar-cuenta?token=$token");
+
+        Mail::to($usuario->email)->send(
+            new VerificarCuentaMail($usuario, $link)
+        );
+
+        return back()->with('success', 'Correo de verificación reenviado. Revisa tu bandeja.');
+    }
+
     public function registrar(Request $request): RedirectResponse
     {
         $request->validate([

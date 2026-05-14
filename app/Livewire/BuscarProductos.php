@@ -125,7 +125,7 @@ class BuscarProductos extends Component
 
         if ($this->productoDetalle) {
             $detalleProducto  = Producto::detalle($this->productoDetalle);
-            $detalleImagenes  = Producto::imagenes($this->productoDetalle);
+            $detalleImagenes  = Producto::traerImagenes($this->productoDetalle);
             $detalleEspecifs  = Producto::especificaciones($this->productoDetalle);
             $detalleOpiniones = Producto::opiniones($this->productoDetalle);
         }
