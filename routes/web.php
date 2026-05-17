@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DeseoController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PedidoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
@@ -33,7 +35,25 @@ Route::middleware('auth:usuario')->group(function () {
     Route::post('/deseos/toggle',            [DeseoController::class, 'toggle'])->name('deseos.toggle');
     Route::delete('/deseos/{productoId}',    [DeseoController::class, 'quitar'])->name('deseos.quitar');
     Route::get('/deseos/mis-ids',            [DeseoController::class, 'misIds'])->name('deseos.ids');
+
+    Route::get('/checkout',         [CheckoutController::class, 'index'])
+         ->name('checkout.index');
+
+    Route::post('/checkout/intent', [CheckoutController::class, 'crearIntent'])
+         ->name('checkout.intent');
+
+    Route::post('/checkout/confirmar', [CheckoutController::class, 'confirmar'])
+         ->name('checkout.confirmar');
+
+    Route::get('/checkout/exito',   [CheckoutController::class, 'exito'])
+         ->name('checkout.exito');
+
+    Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('perfil.pedidos');
+
 });
+
+Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])
+     ->name('stripe.webhook');
 
 Route::post('/logout', [LoginUsuarioController::class, 'logout'])
     ->name('logout.usuario')

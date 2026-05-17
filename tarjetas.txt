@@ -1,0 +1,7 @@
+Tarjetas de prueba más útiles
+NúmeroResultado
+4242 4242 4242 4242✅ Pago exitoso
+4000 0000 0000 0002❌ Tarjeta declinada
+4000 0025 0000 3155🔐 Requiere autenticación 3D Secure
+4000 0000 0000 9995❌ Fondos insuficientes
+4000 0000 0000 0069❌ Tarjeta expirada

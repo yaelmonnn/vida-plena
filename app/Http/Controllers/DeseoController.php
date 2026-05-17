@@ -6,6 +6,7 @@ use App\Models\Deseo;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DeseoController extends Controller
 {
@@ -14,7 +15,7 @@ class DeseoController extends Controller
     {
         $usuarioId = Auth::guard('usuario')->id();
 
-        $rows = \Illuminate\Support\Facades\DB::select("
+        $rows = DB::select("
             SELECT
                 d.Id          AS deseo_id,
                 d.agregado_en,

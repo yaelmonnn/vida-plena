@@ -166,12 +166,12 @@
                                 </span>
                             </div>
 
-                            <button disabled
-                                class="w-full bg-gray-200 text-gray-400 font-bold py-3.5 rounded-2xl
-                           flex items-center justify-center gap-2 cursor-not-allowed text-sm">
+                            <a href="{{ route('checkout.index') }}"
+                                class="w-full bg-[#E48F62] text-white font-bold py-3.5 rounded-2xl
+                           flex items-center justify-center gap-2 hover:bg-[#d17c50] text-sm">
                                 <i class="fa-solid fa-lock text-xs"></i>
-                                Pagar (próximamente)
-                            </button>
+                                Pagar
+                            </a>
 
                             <p class="text-center text-[10px] text-gray-300 mt-3 flex items-center justify-center gap-1">
                                 <i class="fa-solid fa-shield-halved"></i>

@@ -16,6 +16,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.auth' => \App\Http\Middleware\EnsureAdminAuth::class,
         ]);
     })
+    ->withMiddleware(function (Middleware $middleware) {
+        // ── Excluir el webhook de Stripe de la verificación CSRF ──
+
+        $middleware->redirectGuestsTo(function ($request) {
+            return route('login.usuario');
+        });
+
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
