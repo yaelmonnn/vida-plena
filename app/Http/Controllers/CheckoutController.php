@@ -23,13 +23,63 @@ class CheckoutController extends Controller
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Helper: resuelve los items según si viene de compra directa
+    // o del carrito normal. Devuelve una colección uniforme con:
+    //   ->producto, ->cantidad
+    // ──────────────────────────────────────────────────────────
+    private function resolverItems($usuarioId): \Illuminate\Support\Collection
+    {
+        $directa = session('compra_directa');
+
+        if ($directa) {
+            $producto = Producto::with('imagenes')->find($directa['producto_id']);
+
+            if (!$producto) return collect();
+
+            // Fabricamos un objeto anónimo con la misma forma que un item de carrito
+            return collect([(object)[
+                'producto_id' => $producto->Id,
+                'producto'    => $producto,
+                'cantidad'    => $directa['cantidad'],
+            ]]);
+        }
+
+        return Carrito::with(['producto.imagenes'])
+                      ->where('usuario_id', $usuarioId)
+                      ->get();
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // NUEVO — Comprar ahora (desde modal de producto)
+    // Guarda el producto en sesión y redirige al checkout
+    // ──────────────────────────────────────────────────────────
+    public function comprarAhora(Request $request, $id)
+    {
+        $usuario  = Auth::guard('usuario')->user();
+        $producto = Producto::findOrFail($id);
+
+        if (!$producto->activo || $producto->cantidad_disponible < 1) {
+            return redirect()->route('tienda')
+                             ->with('error', 'Este producto no está disponible.');
+        }
+
+        // Limpiamos cualquier compra directa anterior y guardamos la nueva
+        session(['compra_directa' => [
+            'producto_id' => $producto->Id,
+            'cantidad'    => 1,
+        ]]);
+
+        return redirect()->route('checkout.index');
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // PASO 0 — Mostrar resumen del checkout
+    // ──────────────────────────────────────────────────────────
     public function index()
     {
         $usuario = Auth::guard('usuario')->user();
-
-        $items = Carrito::with(['producto.imagenes'])
-                        ->where('usuario_id', $usuario->Id)
-                        ->get();
+        $items   = $this->resolverItems($usuario->Id);
 
         if ($items->isEmpty()) {
             return redirect()->route('carrito')
@@ -39,13 +89,15 @@ class CheckoutController extends Controller
         $subtotal = $items->sum(fn($i) => $i->producto->precio * $i->cantidad);
         $total    = $subtotal;
 
-        return view('checkout.index', compact('items', 'subtotal', 'total'));
+        // Flag para que la vista sepa si es compra directa
+        $esCompraDirecta = (bool) session('compra_directa');
+
+        return view('checkout.index', compact('items', 'subtotal', 'total', 'esCompraDirecta'));
     }
 
-    /**
-     * PASO 1 — Solo crea el PaymentIntent en Stripe. NO toca la BD.
-     * Si la tarjeta falla, no queda ningún pedido basura.
-     */
+    // ──────────────────────────────────────────────────────────
+    // PASO 1 — Crear PaymentIntent en Stripe (sin tocar BD)
+    // ──────────────────────────────────────────────────────────
     public function crearIntent(Request $request)
     {
         $request->validate([
@@ -56,13 +108,10 @@ class CheckoutController extends Controller
         ]);
 
         $usuario = Auth::guard('usuario')->user();
-
-        $items = Carrito::with('producto')
-                        ->where('usuario_id', $usuario->Id)
-                        ->get();
+        $items   = $this->resolverItems($usuario->Id);
 
         if ($items->isEmpty()) {
-            return response()->json(['ok' => false, 'message' => 'Carrito vacío.'], 422);
+            return response()->json(['ok' => false, 'message' => 'No hay productos en el pedido.'], 422);
         }
 
         foreach ($items as $item) {
@@ -87,7 +136,6 @@ class CheckoutController extends Controller
                 ],
             ]);
 
-            // Guardamos envío y fechas en sesión para usarlos en confirmar()
             session([
                 'checkout_envio'  => $request->input('envio'),
                 'checkout_fechas' => $request->input('fechas_servicio', []),
@@ -107,10 +155,9 @@ class CheckoutController extends Controller
         }
     }
 
-    /**
-     * PASO 2 — Stripe confirmó en el frontend.
-     * Verificamos con Stripe y SOLO ENTONCES creamos el pedido en BD.
-     */
+    // ──────────────────────────────────────────────────────────
+    // PASO 2 — Stripe confirmó en el frontend → crear pedido en BD
+    // ──────────────────────────────────────────────────────────
     public function confirmar(Request $request)
     {
         $request->validate([
@@ -119,7 +166,7 @@ class CheckoutController extends Controller
 
         $usuario = Auth::guard('usuario')->user();
 
-        // 1. Verificar con Stripe que el pago realmente fue exitoso
+        // 1. Verificar con Stripe que el pago fue exitoso
         try {
             $intent = PaymentIntent::retrieve($request->payment_intent_id);
         } catch (\Exception $e) {
@@ -136,13 +183,13 @@ class CheckoutController extends Controller
             ], 422);
         }
 
-        // 2. Evitar duplicados si confirmar() se llama dos veces
+        // 2. Evitar duplicados
         $existente = Pedido::where('stripe_payment_id', $intent->id)->first();
         if ($existente) {
             return response()->json(['ok' => true, 'pedido_id' => $existente->Id]);
         }
 
-        // 3. Recuperar datos de sesión
+        // 3. Datos de sesión
         $envio  = session('checkout_envio', []);
         $fechas = session('checkout_fechas', []);
 
@@ -153,21 +200,20 @@ class CheckoutController extends Controller
             ], 422);
         }
 
-        // 4. Carrito actual
-        $items = Carrito::with('producto')
-                        ->where('usuario_id', $usuario->Id)
-                        ->get();
+        // 4. Resolver items (carrito o compra directa)
+        $items           = $this->resolverItems($usuario->Id);
+        $esCompraDirecta = (bool) session('compra_directa');
 
         if ($items->isEmpty()) {
             return response()->json([
                 'ok'      => false,
-                'message' => 'El carrito ya fue procesado.',
+                'message' => 'El pedido ya fue procesado.',
             ], 422);
         }
 
         $total = $items->sum(fn($i) => $i->producto->precio * $i->cantidad);
 
-        // 5. Crear pedido — pago ya verificado por Stripe
+        // 5. Crear pedido en BD
         DB::beginTransaction();
         try {
             $pedido = Pedido::create([
@@ -202,8 +248,17 @@ class CheckoutController extends Controller
                         ->decrement('cantidad_disponible', $item->cantidad);
             }
 
-            Carrito::where('usuario_id', $usuario->Id)->delete();
-            session()->forget(['checkout_envio', 'checkout_fechas', 'checkout_intent']);
+            // Limpiar carrito solo si NO era compra directa
+            if (!$esCompraDirecta) {
+                Carrito::where('usuario_id', $usuario->Id)->delete();
+            }
+
+            session()->forget([
+                'checkout_envio',
+                'checkout_fechas',
+                'checkout_intent',
+                'compra_directa',   // ← limpia también la compra directa si existía
+            ]);
 
             DB::commit();
 
@@ -226,6 +281,9 @@ class CheckoutController extends Controller
         }
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Página de éxito
+    // ──────────────────────────────────────────────────────────
     public function exito(Request $request)
     {
         $pedidoId = $request->query('pedido');
@@ -242,6 +300,9 @@ class CheckoutController extends Controller
         return view('checkout.exito', compact('pedido'));
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Webhook de Stripe
+    // ──────────────────────────────────────────────────────────
     public function webhook(Request $request)
     {
         $payload = $request->getContent();
@@ -260,8 +321,6 @@ class CheckoutController extends Controller
             if (Pedido::where('stripe_payment_id', $intent->id)->exists()) {
                 return response('Already processed', 200);
             }
-
-            // \Log::warning("Webhook: PaymentIntent {$intent->id} succeeded pero no hay pedido en BD.");
         }
 
         return response('OK', 200);

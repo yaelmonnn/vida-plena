@@ -45,6 +45,10 @@ Route::middleware('auth:usuario')->group(function () {
     Route::post('/checkout/intent', [CheckoutController::class, 'crearIntent'])
         ->name('checkout.intent');
 
+    Route::get('/checkout/comprar-ahora/{id}', [CheckoutController::class, 'comprarAhora'])
+    ->name('checkout.comprar-ahora');
+
+
     Route::post('/checkout/confirmar', [CheckoutController::class, 'confirmar'])
         ->name('checkout.confirmar');
 
