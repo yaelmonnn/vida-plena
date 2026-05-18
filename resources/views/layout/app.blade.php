@@ -84,7 +84,7 @@
 
     @auth('usuario')
         <script>
-            const INACTIVIDAD_MS = 2 * 60 * 1000;
+            const INACTIVIDAD_MS = 10 * 60 * 1000;
             const LOGOUT_URL = '{{ route('logout.usuario') }}';
 
             let timerInactividad;
