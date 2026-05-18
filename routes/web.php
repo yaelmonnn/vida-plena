@@ -9,6 +9,9 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DeseoController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\AdminPedidoController;
+use App\Http\Controllers\AdminUsuarioController;
+use App\Http\Controllers\AdminClienteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'inicio'])->name('inicio');
@@ -21,7 +24,7 @@ Route::middleware('guest:usuario')->group(function () {
     Route::get('/login',    [LoginUsuarioController::class, 'mostrarLogin'])->name('login.usuario');
     Route::post('/login',   [LoginUsuarioController::class, 'login']);
     Route::get('/registro', [LoginUsuarioController::class, 'mostrarRegistro'])->name('registro');
-    Route::post('/registro',[LoginUsuarioController::class, 'registrar']);
+    Route::post('/registro', [LoginUsuarioController::class, 'registrar']);
 });
 
 Route::get('/verificar-cuenta', [LoginUsuarioController::class, 'verificarCuenta']);
@@ -37,23 +40,22 @@ Route::middleware('auth:usuario')->group(function () {
     Route::get('/deseos/mis-ids',            [DeseoController::class, 'misIds'])->name('deseos.ids');
 
     Route::get('/checkout',         [CheckoutController::class, 'index'])
-         ->name('checkout.index');
+        ->name('checkout.index');
 
     Route::post('/checkout/intent', [CheckoutController::class, 'crearIntent'])
-         ->name('checkout.intent');
+        ->name('checkout.intent');
 
     Route::post('/checkout/confirmar', [CheckoutController::class, 'confirmar'])
-         ->name('checkout.confirmar');
+        ->name('checkout.confirmar');
 
     Route::get('/checkout/exito',   [CheckoutController::class, 'exito'])
-         ->name('checkout.exito');
+        ->name('checkout.exito');
 
     Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('perfil.pedidos');
-
 });
 
 Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])
-     ->name('stripe.webhook');
+    ->name('stripe.webhook');
 
 Route::post('/logout', [LoginUsuarioController::class, 'logout'])
     ->name('logout.usuario')
@@ -76,12 +78,46 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminAuthController::class, 'dashboard'])->name('dashboard');
 
         Route::get('/productos', [ProductoController::class, 'formProductos'])->name('productos');
-        Route::get('/servicios', [AdminAuthController::class, 'dashboard'])->name('servicios');
-        Route::get('/categorias', [AdminAuthController::class, 'dashboard'])->name('categorias');
-        Route::get('/pedidos', [AdminAuthController::class, 'dashboard'])->name('pedidos');
-        Route::get('/clientes', [AdminAuthController::class, 'dashboard'])->name('clientes');
-        Route::get('/usuarios', [AdminAuthController::class, 'dashboard'])->name('usuarios');
-        Route::get('/reportes', [AdminAuthController::class, 'dashboard'])->name('reportes');
+        Route::get('/servicios', [ProductoController::class, 'formServicios'])->name('servicios');
+        Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias');
+        // Route::get('/pedidos', [AdminAuthController::class, 'dashboard'])->name('pedidos');
+        // Route::get('/clientes', [AdminAuthController::class, 'dashboard'])->name('clientes');
+        // Route::get('/usuarios', [AdminAuthController::class, 'dashboard'])->name('usuarios');
+
+        Route::get('/usuarios', [AdminUsuarioController::class, 'index'])
+            ->name('usuarios');
+
+        Route::post('/usuarios', [AdminUsuarioController::class, 'store'])
+            ->name('usuarios.store');
+
+        Route::put('/usuarios/{id}', [AdminUsuarioController::class, 'update'])
+            ->name('usuarios.update');
+
+        Route::delete('/usuarios/{id}', [AdminUsuarioController::class, 'destroy'])
+            ->name('usuarios.destroy');
+
+
+        /*
+|--------------------------------------------------------------------------
+| CLIENTES
+|--------------------------------------------------------------------------
+*/
+
+        Route::get('/clientes', [AdminClienteController::class, 'index'])
+            ->name('clientes');
+
+        Route::put('/clientes/{id}', [AdminClienteController::class, 'update'])
+            ->name('clientes.update');
+
+        Route::delete('/clientes/{id}', [AdminClienteController::class, 'destroy'])
+            ->name('clientes.destroy');
+
+
+
+        Route::get('/pedidos',              [AdminPedidoController::class, 'index'])->name('pedidos');
+        Route::get('/pedidos/{id}',         [AdminPedidoController::class, 'show'])->name('pedidos.show');
+        Route::post('/pedidos/{id}/enviar', [AdminPedidoController::class, 'enviar'])->name('pedidos.enviar');
+
         Route::get('/productos/{id}/imagenes', [ProductoController::class, 'imagenes'])->name('productos.imagenes');
         Route::post('/productos/{id}/imagenes',         [ProductoController::class, 'agregarImagenes'])->name('productos.imagenes.agregar');
         Route::delete('/productos/imagenes/{imagenId}', [ProductoController::class, 'eliminarImagen'])->name('productos.imagenes.eliminar');
@@ -107,7 +143,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('/logout',   [AdminAuthController::class, 'logout'])->name('logout');
     });
-
 });
-
-

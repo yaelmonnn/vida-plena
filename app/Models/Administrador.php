@@ -26,5 +26,11 @@ class Administrador extends Authenticatable
         return $this->belongsTo(RolAdmin::class, 'rol_id', 'Id'); // ← FK, PK del rol
     }
 
+    protected function casts(): array
+    {
+        return [
+            'activo' => 'boolean',
+        ];
+    }
 
 }
