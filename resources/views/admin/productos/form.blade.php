@@ -3,7 +3,6 @@
 @section('content')
     @vite('resources/css/productosAdmin.css')
 
-
     <div class="adm-wrap">
 
         {{-- Sidebar --}}
@@ -30,11 +29,14 @@
             <main class="adm-content">
 
                 @if (session('success'))
-                    <div
-                        class="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl px-4 py-3 text-sm mb-6">
-                        <i class="fa-solid fa-circle-check"></i>
-                        {{ session('success') }}
-                    </div>
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: @json(session('success')),
+                        confirmButtonColor: '#e05c3a',
+                    });
+                </script>
                 @endif
 
                 {{-- Título de sección --}}
@@ -49,21 +51,15 @@
                     </button>
                     <button id="tab-add" onclick="switchTab('add')"
                         class="tab-inactive flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        Agregar producto
+                        <i id="tab-add-icon" class="fa-solid fa-plus text-xs"></i>
+                        <span id="tab-add-label">Agregar producto</span>
                     </button>
-
                 </div>
 
+                {{-- ── PANEL BUSCAR ── --}}
                 <div id="panel-search">
-
-                    {{-- Resultados (estáticos de ejemplo) --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-5">
                         <div class="divide-y divide-gray-100">
-
-
-
-                            {{-- Resultados con DataTable --}}
                             <div class="bg-white mb-5">
                                 <div class="px-5 py-4 border-b border-gray-100">
                                     <p class="text-sm font-semibold text-gray-700">Resultados</p>
@@ -82,7 +78,8 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($productos as $p)
-                                                <tr data-id="{{ $p->Id }}" data-nombre="{{ $p->nombre }}"
+                                                <tr data-id="{{ $p->Id }}"
+                                                    data-nombre="{{ $p->nombre }}"
                                                     data-categoria="{{ $p->categoria }}"
                                                     data-categoria-id="{{ $p->categoria_id }}"
                                                     data-precio="{{ $p->precio_raw }}"
@@ -95,20 +92,16 @@
                                                         <div class="flex items-center gap-3">
                                                             <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs flex-shrink-0"
                                                                 style="background:rgba(228,143,98,.1); color:var(--coral)">
-                                                                <i
-                                                                    class="fa-solid {{ $p->tipo === 'servicio' ? 'fa-spa' : 'fa-box-open' }}"></i>
+                                                                <i class="fa-solid {{ $p->tipo === 'servicio' ? 'fa-spa' : 'fa-box-open' }}"></i>
                                                             </div>
-                                                            <span
-                                                                class="text-sm font-semibold text-gray-800">{{ $p->nombre }}</span>
+                                                            <span class="text-sm font-semibold text-gray-800">{{ $p->nombre }}</span>
                                                         </div>
                                                     </td>
                                                     <td class="text-sm text-gray-600">{{ $p->categoria }}</td>
-                                                    <td class="text-sm font-bold" style="color:var(--ink)">
-                                                        {{ $p->precio_fmt }}</td>
+                                                    <td class="text-sm font-bold" style="color:var(--ink)">{{ $p->precio_fmt }}</td>
                                                     <td>
-                                                        <span
-                                                            class="text-xs font-semibold px-2.5 py-1 rounded-full
-                                {{ $p->disponibilidad === 'Disponible' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-500' }}">
+                                                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                                            {{ $p->disponibilidad === 'Disponible' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-500' }}">
                                                             {{ $p->disponibilidad }}
                                                         </span>
                                                     </td>
@@ -125,153 +118,41 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-                    {{-- Formulario de edición (aparece al hacer clic en Editar) --}}
-                    <div id="editForm" class="hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="section-title mb-0">Editar producto</p>
-                            <button onclick="closeEdit()"
-                                class="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
-                                <i class="fa-solid fa-xmark"></i> Cerrar
-                            </button>
-                        </div>
-
-                        <form id="formEditar" method="POST" action=""
-                            class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre</label>
-                                    <input type="text" id="edit-nombre" name="nombre"
-                                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition">
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Categoría</label>
-                                    <select name="categoria_id"
-                                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition">
-                                        @foreach ($categorias as $cat)
-                                            <option value="{{ $cat->Id }}">{{ $cat->categoria }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
-                                    <select id="edit-estado" name="estado_id"
-                                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition">
-                                        @foreach ($estados as $est)
-                                            <option value="{{ $est->Id }}">{{ $est->estado_nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
-                                    <div class="relative">
-                                        <span
-                                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-semibold">$</span>
-                                        <input type="number" step="0.01" id="edit-precio" name="precio"
-                                            class="w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm transition">
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Cantidad
-                                        disponible</label>
-                                    <input type="number" id="edit-cantidad" name="cantidad_disponible"
-                                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition">
-                                </div>
-
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
-                                <textarea id="edit-descripcion" name="descripcion" rows="3"
-                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none transition"></textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Imágenes actuales</label>
-                                <div id="edit-imagenes-actuales" class="flex flex-wrap gap-3 mb-3">
-                                    <p class="text-xs text-gray-400 italic">Cargando imágenes...</p>
-                                </div>
-
-                                <div id="edit-img-upload-wrap">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Subir nuevas
-                                        imágenes</label>
-                                    <div class="flex gap-3 items-center">
-                                        <input type="file" id="edit-nuevas-imagenes" multiple accept="image/*"
-                                            class="flex-1 text-sm border border-gray-300 rounded-lg p-2 bg-white
-                       file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
-                       file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
-                       hover:file:bg-gray-200 cursor-pointer">
-                                        <button type="button" id="btnSubirImagenes"
-                                            class="flex items-center gap-2 text-white text-sm font-bold px-4 py-2 rounded-xl transition hover:opacity-90 whitespace-nowrap"
-                                            style="background:var(--coral)">
-                                            <i class="fa-solid fa-upload text-xs"></i>
-                                            Subir
-                                        </button>
-                                    </div>
-                                    <p id="edit-img-msg" class="text-xs mt-1 hidden"></p>
-                                </div>
-                            </div>
-
-                            <label class="flex items-center gap-2 cursor-pointer w-fit">
-                                <input type="checkbox" name="activo" id="edit-activo" checked
-                                    class="w-4 h-4 rounded border-gray-300 accent-(--coral)">
-                                <span class="text-sm text-gray-700 font-medium">Producto activo</span>
-                            </label>
-
-                            <div class="flex items-center gap-3 pt-1">
-                                <button type="submit"
-                                    class="flex items-center gap-2 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
-                                    style="background:var(--coral)">
-                                    <i class="fa-solid fa-floppy-disk"></i>
-                                    Guardar cambios
-                                </button>
-                                <button type="button" id="btnEliminar"
-                                    class="text-sm font-semibold text-red-400 hover:text-red-600 px-4 py-2.5 rounded-xl border border-red-100 hover:bg-red-50 transition">
-                                    <i class="fa-solid fa-trash-can mr-1 text-xs"></i>
-                                    Eliminar
-                                </button>
-                            </div>
-
-                        </form>
-
-                        {{-- Form oculto para DELETE --}}
-                        <form id="formEliminar" method="POST" action="" class="hidden">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-
-                    </div>
-
                 </div>
 
-                {{-- ─────────────────────────────────────────
-                 PANEL A: AGREGAR PRODUCTO
-            ───────────────────────────────────────── --}}
+                {{-- ── PANEL AGREGAR / EDITAR (mismo form) ── --}}
                 <div id="panel-add" class="hidden">
-                    <form method="POST" action="{{ route('admin.productos.store') }}"
+
+                    {{-- Banner modo edición --}}
+                    <div id="edit-banner" class="hidden flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm mb-5">
+                        <span class="text-amber-700 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Editando: <span id="edit-banner-nombre" class="font-bold"></span>
+                        </span>
+                        <button type="button" onclick="cancelEdit()"
+                            class="text-xs text-amber-500 hover:text-amber-700 flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-xmark"></i> Cancelar edición
+                        </button>
+                    </div>
+
+                    {{-- Form unificado --}}
+                    <form id="formProducto" method="POST" action="{{ route('admin.productos.store') }}"
                         class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6"
                         enctype="multipart/form-data">
                         @csrf
+                        {{-- El campo _method se inyecta dinámicamente al entrar en modo edición --}}
+                        <input type="hidden" name="_method" id="form-method" value="POST">
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre</label>
-                                <input type="text" name="nombre" placeholder="Ej. Barandal de seguridad"
+                                <input type="text" name="nombre" id="f-nombre"
+                                    placeholder="Ej. Barandal de seguridad"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition
-                           @error('nombre') border-red-400 @enderror">
+                                        @error('nombre') border-red-400 @enderror">
                                 @error('nombre')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                                 @enderror
@@ -279,9 +160,9 @@
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Categoría</label>
-                                <select name="categoria_id"
+                                <select name="categoria_id" id="f-categoria"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition
-                           @error('categoria_id') border-red-400 @enderror">
+                                        @error('categoria_id') border-red-400 @enderror">
                                     <option value="">Selecciona una categoría</option>
                                     @foreach ($categorias as $cat)
                                         <option value="{{ $cat->Id }}"
@@ -297,9 +178,9 @@
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
-                                <select name="estado_id"
+                                <select name="estado_id" id="f-estado"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white transition
-                           @error('estado_id') border-red-400 @enderror">
+                                        @error('estado_id') border-red-400 @enderror">
                                     <option value="">Selecciona un estado</option>
                                     @foreach ($estados as $est)
                                         <option value="{{ $est->Id }}"
@@ -316,12 +197,11 @@
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
                                 <div class="relative">
-                                    <span
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-semibold">$</span>
-                                    <input type="number" step="0.01" name="precio" placeholder="0.00"
-                                        value="{{ old('precio') }}"
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-semibold">$</span>
+                                    <input type="number" step="0.01" name="precio" id="f-precio"
+                                        placeholder="0.00" value="{{ old('precio') }}"
                                         class="w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm transition
-                               @error('precio') border-red-400 @enderror">
+                                            @error('precio') border-red-400 @enderror">
                                 </div>
                                 @error('precio')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
@@ -330,10 +210,10 @@
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Cantidad disponible</label>
-                                <input type="number" name="cantidad_disponible" placeholder="0"
-                                    value="{{ old('cantidad_disponible') }}"
+                                <input type="number" name="cantidad_disponible" id="f-cantidad"
+                                    placeholder="0" value="{{ old('cantidad_disponible') }}"
                                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition
-                           @error('cantidad_disponible') border-red-400 @enderror">
+                                        @error('cantidad_disponible') border-red-400 @enderror">
                                 @error('cantidad_disponible')
                                     <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                                 @enderror
@@ -343,52 +223,90 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
-                            <textarea name="descripcion" rows="3" placeholder="Describe brevemente el producto o servicio..."
+                            <textarea name="descripcion" id="f-descripcion" rows="3"
+                                placeholder="Describe brevemente el producto o servicio..."
                                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none transition">{{ old('descripcion') }}</textarea>
                         </div>
 
-                        {{-- Imágenes con preview --}}
+                        {{-- Imágenes --}}
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">
                                 Imágenes <span class="text-gray-400 font-normal text-xs">(máx. 5)</span>
                             </label>
-                            <input type="file" name="imagenes[]" multiple accept="image/*" id="fileInput"
-                                class="w-full text-sm border border-gray-300 rounded-lg p-2 bg-white
-                       file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
-                       file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
-                       hover:file:bg-gray-200 cursor-pointer">
-                            @error('imagenes')
-                                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-                            @enderror
-                            <div id="previewContainer" class="flex flex-wrap gap-3 mt-3"></div>
+
+                            {{-- Imágenes actuales (solo visible en modo edición) --}}
+                            <div id="edit-imagenes-wrap" class="hidden mb-3">
+                                <p class="text-xs font-semibold text-gray-500 mb-2">Imágenes actuales</p>
+                                <div id="edit-imagenes-actuales" class="flex flex-wrap gap-3">
+                                    <p class="text-xs text-gray-400 italic">Cargando imágenes...</p>
+                                </div>
+                            </div>
+
+                            <div id="edit-img-upload-wrap">
+                                <input type="file" name="imagenes[]" multiple accept="image/*" id="fileInput"
+                                    class="w-full text-sm border border-gray-300 rounded-lg p-2 bg-white
+                                        file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0
+                                        file:text-sm file:font-semibold file:bg-gray-100 file:cursor-pointer
+                                        hover:file:bg-gray-200 cursor-pointer">
+                                @error('imagenes')
+                                    <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
+                                @enderror
+
+                                {{-- Botón subir (solo modo edición) --}}
+                                <div id="btn-subir-wrap" class="hidden mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <button type="button" id="btnSubirImagenes"
+                                            class="flex items-center gap-2 text-white text-sm font-bold px-4 py-2 rounded-xl transition hover:opacity-90 whitespace-nowrap"
+                                            style="background:var(--coral)">
+                                            <i class="fa-solid fa-upload text-xs"></i>
+                                            Subir imágenes
+                                        </button>
+                                    </div>
+                                    <p id="edit-img-msg" class="text-xs mt-1 hidden"></p>
+                                </div>
+
+                                <div id="previewContainer" class="flex flex-wrap gap-3 mt-3"></div>
+                            </div>
                         </div>
 
                         <label class="flex items-center gap-2 cursor-pointer w-fit">
-                            <input type="checkbox" name="activo" checked
+                            <input type="checkbox" name="activo" id="f-activo" checked
                                 class="w-4 h-4 rounded border-gray-300 accent-(--coral)">
                             <span class="text-sm text-gray-700 font-medium">Producto activo</span>
                         </label>
 
                         <div class="flex items-center gap-3 pt-1">
-                            <button type="submit"
+                            <button type="submit" id="btn-submit"
                                 class="flex items-center gap-2 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
                                 style="background:var(--coral)">
                                 <i class="fa-solid fa-floppy-disk"></i>
-                                Guardar producto
+                                <span id="btn-submit-label">Guardar producto</span>
                             </button>
-                            <button type="reset" onclick="document.getElementById('previewContainer').innerHTML=''"
+
+                            {{-- Eliminar (solo modo edición) --}}
+                            <button type="button" id="btnEliminar"
+                                class="hidden text-sm font-semibold text-red-400 hover:text-red-600 px-4 py-2.5 rounded-xl border border-red-100 hover:bg-red-50 transition">
+                                <i class="fa-solid fa-trash-can mr-1 text-xs"></i>
+                                Eliminar
+                            </button>
+
+                            {{-- Limpiar (solo modo creación) --}}
+                            <button type="reset" id="btn-reset"
+                                onclick="document.getElementById('previewContainer').innerHTML=''"
                                 class="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
                                 Limpiar
                             </button>
                         </div>
 
                     </form>
+
+                    {{-- Form oculto para DELETE --}}
+                    <form id="formEliminar" method="POST" action="" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+
                 </div>
-
-                {{-- ─────────────────────────────────────────
-                 PANEL B: BUSCAR Y EDITAR
-            ───────────────────────────────────────── --}}
-
 
             </main>
         </div>
@@ -399,24 +317,66 @@
         onclick="closeSidebar()"></div>
 
     <script>
-        let table = new DataTable('#myTable');
+        // ── DataTable en español ──
+        let table = new DataTable('#myTable', {
+            language: {
+                decimal:        ',',
+                emptyTable:     'No hay datos disponibles',
+                info:           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                infoEmpty:      'Mostrando 0 a 0 de 0 registros',
+                infoFiltered:   '(filtrado de _MAX_ registros totales)',
+                lengthMenu:     'Mostrar _MENU_ registros',
+                loadingRecords: 'Cargando...',
+                processing:     'Procesando...',
+                search:         'Buscar:',
+                zeroRecords:    'No se encontraron resultados',
+                paginate: {
+                    first:    'Primero',
+                    last:     'Último',
+                    next:     'Siguiente',
+                    previous: 'Anterior',
+                },
+                aria: {
+                    sortAscending:  ': activar para ordenar ascendente',
+                    sortDescending: ': activar para ordenar descendente',
+                },
+            }
+        });
 
+        // ── Si hay errores de validación, abre el tab de agregar ──
         @if ($errors->any())
-            switchTab('add');
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de validación',
+                html: `
+                    <ul style="text-align:left;">
+                        @foreach ($errors->all() as $error)
+                            <li>• {{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                confirmButtonColor: '#e05c3a',
+            });
+        </script>
         @endif
 
+        // ── Sidebar móvil ──
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         document.getElementById('menuToggle').addEventListener('click', () => {
             sidebar.classList.add('open');
             overlay.style.display = 'block';
         });
-
         function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.style.display = 'none';
         }
 
+        // ── Estado del modo ──
+        let modoEdicion = false;
+
+        // ── Cambiar tab ──
         function switchTab(tab) {
             const isAdd = tab === 'add';
             document.getElementById('panel-add').classList.toggle('hidden', !isAdd);
@@ -425,7 +385,76 @@
                 ' flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200';
             document.getElementById('tab-search').className = (!isAdd ? 'tab-active' : 'tab-inactive') +
                 ' flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200';
-            if (!isAdd) document.getElementById('editForm').classList.add('hidden');
+
+            // Si se vuelve a "buscar" y estábamos editando, cancelar edición silenciosamente
+            if (!isAdd && modoEdicion) {
+                resetFormModo();
+            }
+        }
+
+        // ── Entrar en modo edición ──
+        function loadEdit(id) {
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+
+            // Rellenar campos
+            document.getElementById('f-nombre').value         = row.dataset.nombre;
+            document.getElementById('f-precio').value         = row.dataset.precio;
+            document.getElementById('f-cantidad').value       = row.dataset.cantidad;
+            document.getElementById('f-descripcion').value    = row.dataset.descripcion;
+            document.querySelector('#formProducto select[name="categoria_id"]').value = row.dataset.categoriaId;
+            document.getElementById('f-estado').value         = row.dataset.estadoId;
+
+            // Cambiar acción y método del form
+            document.getElementById('formProducto').action = `{{ url('admin/productos') }}/${id}`;
+            document.getElementById('form-method').value    = 'PUT';
+
+            // Form de eliminar
+            document.getElementById('formEliminar').action   = `{{ url('admin/productos') }}/${id}`;
+            document.getElementById('btnEliminar').dataset.id     = id;
+            document.getElementById('btnEliminar').dataset.nombre = row.dataset.nombre;
+
+            // UI: modo edición
+            modoEdicion = true;
+            document.getElementById('tab-add-label').textContent = 'Editar producto';
+            document.getElementById('tab-add-icon').className     = 'fa-solid fa-pen-to-square text-xs';
+            document.getElementById('btn-submit-label').textContent = 'Guardar cambios';
+            document.getElementById('edit-banner').classList.remove('hidden');
+            document.getElementById('edit-banner-nombre').textContent = row.dataset.nombre;
+            document.getElementById('btnEliminar').classList.remove('hidden');
+            document.getElementById('btn-reset').classList.add('hidden');
+            document.getElementById('edit-imagenes-wrap').classList.remove('hidden');
+            document.getElementById('btn-subir-wrap').classList.remove('hidden');
+
+            // Cargar imágenes existentes
+            cargarImagenes(id);
+
+            // Cambiar al tab de agregar/editar
+            switchTab('add');
+        }
+
+        // ── Cancelar edición / volver a modo creación ──
+        function cancelEdit() {
+            resetFormModo();
+            switchTab('search');
+        }
+
+        function resetFormModo() {
+            modoEdicion = false;
+            const form = document.getElementById('formProducto');
+            form.reset();
+            form.action                   = `{{ route('admin.productos.store') }}`;
+            document.getElementById('form-method').value = 'POST';
+            document.getElementById('tab-add-label').textContent  = 'Agregar producto';
+            document.getElementById('tab-add-icon').className      = 'fa-solid fa-plus text-xs';
+            document.getElementById('btn-submit-label').textContent = 'Guardar producto';
+            document.getElementById('edit-banner').classList.add('hidden');
+            document.getElementById('btnEliminar').classList.add('hidden');
+            document.getElementById('btn-reset').classList.remove('hidden');
+            document.getElementById('edit-imagenes-wrap').classList.add('hidden');
+            document.getElementById('btn-subir-wrap').classList.add('hidden');
+            document.getElementById('previewContainer').innerHTML  = '';
+            document.getElementById('edit-imagenes-actuales').innerHTML =
+                '<p class="text-xs text-gray-400 italic">Cargando imágenes...</p>';
         }
 
         // ── Renderizar miniaturas ──
@@ -438,7 +467,6 @@
                 return;
             }
 
-            // Ocultar upload si ya hay 5
             document.getElementById('edit-img-upload-wrap').style.display = imgs.length >= 5 ? 'none' : '';
 
             imgs.forEach(img => {
@@ -450,12 +478,10 @@
                 el.alt = img.alt_text ?? '';
                 el.className = 'w-20 h-20 object-cover rounded-xl border border-gray-200 shadow-sm';
 
-                // Badge de orden
                 const badge = document.createElement('span');
                 badge.className = 'absolute top-1 left-1 text-xs font-bold bg-black/50 text-white rounded px-1';
                 badge.textContent = img.orden === 0 ? '★' : img.orden;
 
-                // Botón eliminar
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className =
@@ -470,7 +496,7 @@
             });
         }
 
-        // ── Cargar imágenes al abrir editar ──
+        // ── Cargar imágenes por AJAX ──
         function cargarImagenes(id) {
             const contenedor = document.getElementById('edit-imagenes-actuales');
             contenedor.innerHTML = '<p class="text-xs text-gray-400 italic">Cargando imágenes...</p>';
@@ -483,7 +509,7 @@
                 });
         }
 
-        // ── Eliminar imagen con SweetAlert ──
+        // ── Eliminar imagen ──
         function confirmarEliminarImagen(imagenId, ruta) {
             Swal.fire({
                 title: '¿Eliminar imagen?',
@@ -497,41 +523,35 @@
                 reverseButtons: true,
             }).then(result => {
                 if (!result.isConfirmed) return;
-
                 fetch(`{{ url('admin/productos/imagenes') }}/${imagenId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                        }
-                    })
-                    .then(r => r.json())
-                    .then(imgs => {
-                        renderImagenes(imgs);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Imagen eliminada',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    })
-                    .catch(() => Swal.fire({
-                        icon: 'error',
-                        title: 'Error al eliminar'
-                    }));
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(r => r.json())
+                .then(imgs => {
+                    renderImagenes(imgs);
+                    Swal.fire({ icon: 'success', title: 'Imagen eliminada', timer: 1500, showConfirmButton: false });
+                })
+                .catch(() => Swal.fire({ icon: 'error', title: 'Error al eliminar' }));
             });
         }
 
         // ── Subir nuevas imágenes ──
-        document.getElementById('btnSubirImagenes').addEventListener('click', function() {
-            const input = document.getElementById('edit-nuevas-imagenes');
-            const msg = document.getElementById('edit-img-msg');
+        document.getElementById('btnSubirImagenes').addEventListener('click', function () {
+            const input = document.getElementById('fileInput');
+            const msg   = document.getElementById('edit-img-msg');
             const productoId = document.getElementById('btnEliminar').dataset.id;
 
             if (!input.files.length) {
-                msg.textContent = 'Selecciona al menos una imagen.';
-                msg.className = 'text-xs mt-1 text-red-400';
-                msg.classList.remove('hidden');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Selecciona imágenes',
+                    text: 'Debes seleccionar al menos una imagen.',
+                    confirmButtonColor: '#e05c3a',
+                });
                 return;
             }
 
@@ -543,81 +563,49 @@
             this.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Subiendo...';
 
             fetch(`{{ url('admin/productos') }}/${productoId}/imagenes`, {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.error) {
-                        msg.textContent = data.error;
-                        msg.className = 'text-xs mt-1 text-red-400';
-                        msg.classList.remove('hidden');
-                    } else {
-                        renderImagenes(data);
-                        input.value = '';
-                        msg.textContent = 'Imágenes subidas correctamente.';
-                        msg.className = 'text-xs mt-1 text-emerald-600';
-                        msg.classList.remove('hidden');
-                        setTimeout(() => msg.classList.add('hidden'), 3000);
-                    }
-                })
-                .catch(() => {
-                    msg.textContent = 'Error al subir las imágenes.';
-                    msg.className = 'text-xs mt-1 text-red-400';
-                    msg.classList.remove('hidden');
-                })
-                .finally(() => {
-                    this.disabled = false;
-                    this.innerHTML = '<i class="fa-solid fa-upload text-xs"></i> Subir';
+                method: 'POST',
+                body: formData,
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.error,
+                        confirmButtonColor: '#e05c3a',
+                    });
+                } else {
+                    renderImagenes(data);
+                    input.value       = '';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Imágenes subidas',
+                        text: 'Las imágenes se subieron correctamente.',
+                        timer: 1800,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al subir las imágenes.',
+                    confirmButtonColor: '#e05c3a',
                 });
+            })
+            .finally(() => {
+                this.disabled  = false;
+                this.innerHTML = '<i class="fa-solid fa-upload text-xs"></i> Subir imágenes';
+            });
         });
 
-
-        function loadEdit(id) {
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-
-            document.getElementById('edit-nombre').value = row.dataset.nombre;
-            document.getElementById('edit-precio').value = row.dataset.precio;
-            document.getElementById('edit-cantidad').value = row.dataset.cantidad;
-            document.getElementById('edit-descripcion').value = row.dataset.descripcion;
-
-            document.querySelector('#formEditar select[name="categoria_id"]').value = row.dataset.categoriaId;
-
-
-            document.getElementById('edit-estado').value = row.dataset.estadoId;
-
-
-            document.getElementById('formEditar').action = `{{ url('admin/productos') }}/${id}`;
-            document.getElementById('formEliminar').action = `{{ url('admin/productos') }}/${id}`;
-
-
-            document.getElementById('btnEliminar').dataset.id = id;
-            document.getElementById('btnEliminar').dataset.nombre = row.dataset.nombre;
-
-            document.getElementById('editForm').classList.remove('hidden');
-            document.getElementById('editForm').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-
-            // ── Imágenes existentes ──
-            const contenedor = document.getElementById('edit-imagenes-actuales');
-            contenedor.innerHTML = '<p class="text-xs text-gray-400 italic">Cargando imágenes...</p>';
-
-            cargarImagenes(id);
-
-
-        }
-
-        function closeEdit() {
-            document.getElementById('editForm').classList.add('hidden');
-        }
-
-
-        document.getElementById('btnEliminar').addEventListener('click', function() {
+        // ── Eliminar producto ──
+        document.getElementById('btnEliminar').addEventListener('click', function () {
             const nombre = this.dataset.nombre;
-
             Swal.fire({
                 title: '¿Eliminar producto?',
                 html: `<span class="text-gray-600 text-sm">Estás a punto de eliminar <strong>${nombre}</strong>. Esta acción no se puede deshacer.</span>`,
@@ -629,18 +617,13 @@
                 cancelButtonColor: '#6b7280',
                 reverseButtons: true,
             }).then(result => {
-                if (result.isConfirmed) {
-                    document.getElementById('formEliminar').submit();
-                }
+                if (result.isConfirmed) document.getElementById('formEliminar').submit();
             });
         });
 
-        function closeEdit() {
-            document.getElementById('editForm').classList.add('hidden');
-        }
-
-        // ── Preview imágenes ──
-        document.getElementById('fileInput')?.addEventListener('change', function() {
+        // ── Preview imágenes (modo creación) ──
+        document.getElementById('fileInput')?.addEventListener('change', function () {
+            if (modoEdicion) return; // en edición no hacer preview, se sube con el botón
             const container = document.getElementById('previewContainer');
             container.innerHTML = '';
             [...this.files].forEach(file => {
@@ -648,6 +631,7 @@
                 reader.onload = e => {
                     const img = document.createElement('img');
                     img.src = e.target.result;
+                    img.className = 'w-20 h-20 object-cover rounded-xl border border-gray-200';
                     container.appendChild(img);
                 };
                 reader.readAsDataURL(file);

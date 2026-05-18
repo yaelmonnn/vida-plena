@@ -15,7 +15,7 @@ class Seccion extends Model
     public static function navbar(): Collection
     {
         return self::where('activo', 1)
-            ->whereIn('Id', [1,2,3,4])
+            ->whereIn('Id', [1,2,3,4, 5])
             ->get(['Id','seccion', 'ruta']);
     }
 }

@@ -30,7 +30,7 @@ class HomeController extends Controller
 
     public function imagenes(int $id): JsonResponse
     {
-        $imagenes = Producto::imagenes($id);
+        $imagenes = Producto::traerImagenes($id);
 
         return response()->json($imagenes->values());
     }

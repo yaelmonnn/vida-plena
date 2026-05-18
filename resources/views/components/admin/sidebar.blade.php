@@ -11,7 +11,8 @@
     <nav class="sidebar-nav">
 
         <div class="nav-section-title">General</div>
-        <a href="{{ route('admin.dashboard') }}" class="nav-item">
+        <a href="{{ route('admin.dashboard') }}"
+        class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-gauge"></i> Dashboard
         </a>
 
@@ -25,7 +26,8 @@
 
             @foreach($items as $mod)
                 @if(Route::has($mod->ruta))
-                    <a href="{{ route($mod->ruta) }}" class="nav-item">
+                    <a href="{{ route($mod->ruta) }}"
+                    class="nav-item {{ request()->routeIs($mod->ruta) ? 'active' : '' }}">
                         <i class="{{ $mod->icono }}"></i> {{ $mod->modulo }}
                     </a>
                 @endif

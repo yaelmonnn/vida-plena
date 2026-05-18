@@ -19,10 +19,21 @@ class RolAdmin extends Model
 
     public static function modulosPorUsuario($usuarioId)
     {
+
+        $rolId = DB::table('administrador')
+        ->where('Id', $usuarioId)
+        ->value('rol_id');
+
         return DB::table('cat_modulos as cm')
             ->join('conf_modulo as cfm', 'cfm.modulo_id', '=', 'cm.Id')
-            ->where('cfm.usuario_id', $usuarioId)
-            ->select('cm.Id', 'cm.modulo', 'cm.categoria', 'cm.icono', 'cm.ruta')
+            ->where('cfm.usuario_id', $rolId)
+            ->select(
+                'cm.Id',
+                'cm.modulo',
+                'cm.categoria',
+                'cm.icono',
+                'cm.ruta'
+            )
             ->get();
     }
 }
