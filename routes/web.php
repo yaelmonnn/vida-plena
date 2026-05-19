@@ -148,3 +148,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout',   [AdminAuthController::class, 'logout'])->name('logout');
     });
 });
+
+
+Route::fallback(function () {
+
+
+    if (session('admin_id')) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return response()->view('errors.404', [], 404);
+});
