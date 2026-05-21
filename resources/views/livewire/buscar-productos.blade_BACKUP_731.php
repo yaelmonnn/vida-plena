@@ -1,10 +1,6 @@
-<?php
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\Producto;
-use App\Models\Categoria;
 
+<<<<<<< HEAD
 new class extends Component
 {
     use WithPagination;
@@ -205,6 +201,8 @@ new class extends Component
     }
 };
 ?>
+=======
+>>>>>>> develop
 
 {{-- ════════════════════════════════════════════════════════
      VISTA  — Productos Destacados
@@ -257,8 +255,6 @@ new class extends Component
 
             <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 @foreach ($productos as $p)
-
-                <div wire:key="card-{{ $p->Id }}">
                     <x-product-card
                         :id="$p->Id"
                         :titulo="$p->nombre"
@@ -269,9 +265,6 @@ new class extends Component
                         :descripcion="$p->descripcion"
                         :tipo="$p->tipo"
                     />
-                </div>
-
-
                 @endforeach
             </div>
 
