@@ -5,6 +5,7 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         <!-- LOGO -->
+        <a href="{{ route('inicio') }}">
         <div class="flex items-center gap-4">
             <img src="{{ asset('images/logo.png') }}" class="h-14 md:h-16 w-auto object-contain">
 
@@ -12,6 +13,8 @@
                 VIDA <span class="text-[#83d77c]">PLENA</span>
             </span>
         </div>
+        </a>
+
 
         <!-- MENU DESKTOP -->
         <div class="hidden md:flex gap-10 font-medium text-gray-700 text-lg">

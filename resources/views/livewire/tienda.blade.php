@@ -123,6 +123,7 @@
             @if($vista === 'grid')
             <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 @foreach($productos as $p)
+                <div wire:key="card-{{ $p->Id }}">
                     <x-product-card
                         :id="$p->Id"
                         :titulo="$p->nombre"
@@ -133,6 +134,8 @@
                         :descripcion="$p->descripcion"
                         :tipo="$p->tipo"
                     />
+                </div>
+
                 @endforeach
             </div>
             @endif
@@ -141,6 +144,8 @@
             @if($vista === 'lista')
             <div class="flex flex-col gap-4">
                 @foreach($productos as $p)
+
+                <div wire:key="card-{{ $p->Id }}">
                     <x-product-list-item
                         :id="$p->Id"
                         :titulo="$p->nombre"
@@ -152,6 +157,9 @@
                         :tipo="$p->tipo"
                         :cantidad-disponible="$p->cantidad_disponible"
                     />
+                </div>
+
+
                 @endforeach
             </div>
             @endif

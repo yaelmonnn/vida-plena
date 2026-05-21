@@ -69,14 +69,18 @@
                 Productos, tecnología y cuidado coordinado en un solo lugar.
             </p>
 
-            <button
-                class="bg-[#ffbb51] px-10 py-4 text-white rounded-2xl font-bold
-                    hover:scale-105 transition flex items-center gap-3 mx-auto">
+            <a href="{{ route('tienda') }}">
+                <button
+                    class="bg-[#ffbb51] px-10 py-4 text-white rounded-2xl font-bold
+                        hover:scale-105 transition flex items-center gap-3 mx-auto">
 
-                <i class="fa-solid fa-basket-shopping"></i>
-                Explorar tienda
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    Explorar tienda
 
-            </button>
+                </button>
+            </a>
+
+
 
         </div>
     </section>
