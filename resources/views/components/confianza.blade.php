@@ -16,6 +16,7 @@
                     para que el cuidado esté presente, incluso a la distancia.
                 </p>
 
+                <a href="{{ route('tienda') }}">
                 <button
                     class="bg-[#E48F62] text-white font-bold px-8 py-4 rounded-2xl shadow-lg
                         hover:bg-[#E28987] transition flex items-center gap-3">
@@ -24,6 +25,9 @@
                     Descubrir cómo funciona
 
                 </button>
+
+                </a>
+
 
             </div>
 

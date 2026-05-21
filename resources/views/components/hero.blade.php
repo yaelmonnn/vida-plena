@@ -15,24 +15,24 @@
             </p>
 
             <div class="flex gap-5">
-                <button class="bg-[#83d77c] px-8 py-4 rounded-2xl shadow-2xl
+                <a href="{{ route('tienda') }}" class="bg-[#83d77c] px-8 py-4 rounded-2xl shadow-2xl
                             hover:scale-105 transition duration-300 font-semibold
                             flex items-center gap-3">
 
                     <i class="fa-solid fa-cart-shopping"></i>
                     Comprar ahora
 
-                </button>
+                </a>
 
 
-            <button class="bg-white text-[#E48F62] px-8 py-4 rounded-2xl
+            <a href="{{ route('tienda') }}" class="bg-white text-[#E48F62] px-8 py-4 rounded-2xl
                         hover:bg-[#ffbb51] hover:text-white transition duration-300
                         font-semibold flex items-center gap-3">
 
                 <i class="fa-solid fa-lightbulb"></i>
                 Ver soluciones
 
-            </button>
+            </a>
 
             </div>
         </div>
